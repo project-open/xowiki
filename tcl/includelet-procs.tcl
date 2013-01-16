@@ -1663,6 +1663,7 @@ namespace eval ::xowiki::includelet {
 
 }
 
+
 namespace eval ::xowiki::includelet {
   #############################################################################
   # presence
@@ -1670,13 +1671,13 @@ namespace eval ::xowiki::includelet {
   ::xowiki::IncludeletClass create presence \
       -superclass ::xowiki::Includelet \
       -parameter {
-        {__decoration rightbox}
-        {parameter_declaration {
-          {-interval "10 minutes"}
-          {-max_users:integer 40}
-          {-show_anonymous "summary"}
-          {-page}
-        }}
+	  {__decoration rightbox}
+	  {parameter_declaration {
+	      {-interval "10 minutes"}
+	      {-max_users:integer 40}
+	      {-show_anonymous "summary"}
+	      {-page}
+	  }}
       }
 
   # TODO make display style -decoration
@@ -1685,68 +1686,73 @@ namespace eval ::xowiki::includelet {
     my get_parameters
 
     set summary 0
-    if {[::xo::cc user_id] == 0} {
-      switch -- $show_anonymous {
-        nothing {return ""}
-        all     {set summary 0} 
-        default {set summary 1} 
+      if {[::xo::cc user_id] == 0} {
+	  switch -- $show_anonymous {
+	      nothing {return ""}
+	      all     {set summary 0}
+	      default {set summary 1}
+	  }
       }
-    }
 
-    if {[info exists page] && $page eq "this"} {
+      if {[info exists page] && $page eq "this"} {
       my instvar __including_page
-      set extra_where_clause "and page_id = [$__including_page item_id] "
-      set what " on page [$__including_page title]"
-    } else {
+	  set extra_where_clause "and page_id = [$__including_page item_id] "
+	  set what " on page [$__including_page title]"
+      } else {
       set extra_where_clause ""
-      set what " in community [$package_id instance_name]"
-    }
+	  # set what "&nbsp;in community [$package_id instance_name]"
+        set what ""
+      }
 
-    if {!$summary} {
+      if {!$summary} {
       set select_users "user_id, to_char(max(time),'YYYY-MM-DD HH24:MI:SS') as max_time from xowiki_last_visited "
-    }
-    set since_condition [::xo::db::sql since_interval_condition time $interval]
+      }
+      set since_condition [::xo::db::sql since_interval_condition time $interval]
     set where_clause "package_id=$package_id and $since_condition $extra_where_clause"
-    set when "<br>in last $interval"
+      set when "&nbsp;in last $interval"
 
     set output ""
 
-    if {$summary} {
-      set count [db_string [my qn presence_count_users] \
-                     "select count(distinct user_id) from xowiki_last_visited WHERE $where_clause"]
-    } else {
-      set values [db_list_of_lists [my qn get_users] \
-                      [::xo::db::sql select \
+      if {$summary} {
+	  set count [db_string [my qn presence_count_users] \
+			 "select count(distinct user_id) from xowiki_last_visited WHERE $where_clause"]
+      } else {
+	  set values [db_list_of_lists [my qn get_users] \
+			  [::xo::db::sql select \
                            -vars "user_id, to_char(max(time),'YYYY-MM-DD HH24:MI:SS') as max_time" \
                            -from xowiki_last_visited \
                            -where $where_clause \
                            -groupby user_id \
                            -orderby "max_time desc" \
-                           -limit $max_users ]]
-      set count [llength $values]
-      if {$count == $max_users} {
+			       -limit $max_users ]]
+	  set count [llength $values]
+	  if {$count == $max_users} {
         # we have to check, whether there were more users...
-        set count [db_string [my qn presence_count_users] \
-                       "select count(distinct user_id) from xowiki_last_visited WHERE $where_clause"]
-      }
-      foreach value  $values {
-        foreach {user_id time} $value break
+	      set count [db_string [my qn presence_count_users] "$select_count $where_clause"]
+	  }
+	  foreach value  $values {
+	      foreach {user_id time} $value break
         set seen($user_id) $time
-        
-        regexp {^([^.]+)[.]} $time _ time
-        set pretty_time [util::age_pretty -timestamp_ansi $time \
-                             -sysdate_ansi [clock_to_ansi [clock seconds]] \
-                             -mode_3_fmt "%d %b %Y, at %X"]
-        set name [::xo::get_user_name $user_id]
+
+	      regexp {^([^.]+)[.]} $time _ time
+	      set pretty_time [util::age_pretty -timestamp_ansi $time \
+				   -sysdate_ansi [clock_to_ansi [clock seconds]] \
+				   -mode_3_fmt "%d %b %Y, at %X"]
+	      set name [::xo::get_user_name $user_id]
 
         append output "<TR><TD class='user'>$name</TD><TD class='timestamp'>$pretty_time</TD></TR>\n"
+	  }
+	  if {$output ne ""} {
+	      set output "<div id='wiki_table_reg_users' name='wiki_table_reg_users'><TABLE>$output</TABLE><a href='\#' onclick='document.getElementById(\"wiki_table_reg_users\").style.display=\"none\";'>close</a></div>"
+	  }
       }
-      if {$output ne ""} {set output "<TABLE>$output</TABLE>\n"}
-    }
-    set users [expr {$count == 0 ? "No registered users" : 
-                     $count == 1 ? "1 registered user" : 
-                     "$count registered users"}]
-    return "<div class='title'>$users$what$when</div>$output"
+      set users [expr {$count == 0 ? "No registered users" :
+                     $count == 1 ? "1 registered user" :
+		       "$count registered users"}]
+
+      if {$output ne ""} {set users "<a href='\#' onclick='document.getElementById(\"wiki_table_reg_users\").style.display=\"inline\";'>$users</a>" }
+
+      return "<div class='title' style='display:inline'><div id='wikiMessRegUsers'>$users</div><div id='wikiRegUsers' style='display:inline'>$what$when</div></div>$output"
   }
 }
 
