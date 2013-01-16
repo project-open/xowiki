@@ -1,28 +1,32 @@
 /* for mini-calendar in weblog */
-#at-a-glance td.inactive  {color: #999999; background:#FFF;}
+#at-a-glance td.inactive  {color: #999999;}
 /*#at-a-glance :active  {background: #999999;}*/
 /*#at-a-glance td.active  {color: #003b53;}*/
 /*#at-a-glance td.today  {color: #003b53;}*/
 
-/* minimize damage of yui-skin-sam */
-#breadcrumbs, #alert-message {clear: both !important; text-align: left !important;}
 
-/* useful helper */
 .visual-clear {clear: both; display: block;}
-
-/* menues and such */
 div.wiki-menu {
     position: relative; right: 0px; 
     text-align: right;  font-family: sans-serif; font-size: 85%;color: #7A7A78;
 }
 
-#wikicmds {position: relative; top: -24px;  right: 0px; height: 0px;
-	  text-align: right;  font-family: sans-serif; font-size: 85%;color: #7A7A78;}
+#wikicmds {
+	position: relative; 
+	top: -43px;  
+	right: 0px; 
+	height: 0px;
+	text-align: right;  
+	font-family: sans-serif; 
+	font-size: 100%;
+	color: #000000;
+	font-weight: bold
+}
 /*#portal #wikicmds {top: -90px;}*/
 div.portlet #wikicmds {float: inherit ! important; top: 0px ! important; height: inherit;}
 #page-body #wikicmds {top: -30px;}
 
-#wikicmds a, #wikicmds a:visited, div.wiki-menu a { color: #7A7A78; text-decoration: none;}
+#wikicmds a, #wikicmds a:visited, div.wiki-menu a { color: #000000; text-decoration: none; font-weight: bold;}
 #wikicmds a:hover {text-decoration: underline;}
 #wikicmds a:active {color: rgb(255,153,51);}
 #cmdbar {
@@ -32,10 +36,6 @@ div.portlet #wikicmds {float: inherit ! important; top: 0px ! important; height:
     padding: 0.25em 0.5em 0.25em 0.5em;
     color: #7A7A78;
     margin-bottom: 2px;
-}
-
-div.xowiki-content {
-    font: 10pt Verdana, Arial, Helvetica, sans-serif;
 }
 
 /* appearance of link types */
@@ -135,34 +135,11 @@ div.xowiki-content a.notification-image-button {
     text-decoration: none;
 }
 
-/* headings */
-div.xowiki-content h1 {
-    /* font-size: 24px; */
-    clear: both;
-    border-bottom: solid silver 1px; color: #222222; 
-    margin-top: 1em;  margin-bottom: 0.5em;
-    text-align: left; font-weight: normal;
-}
-div.xowiki-content h2 {
-    /*font-size: 16px; */
-    clear: both;
-    border-bottom: 1px solid silver; color: #222222;
-    margin-top: 1em;  margin-bottom: 0.25em;
-    text-align: left; font-weight: normal;
-}
-div.xowiki-content h3 {
-    /* font-size: 14px; */
-    text-indent: 0em; 
-    margin-top: 0.75em; margin-bottom: 0.1em;
-    letter-spacing: 0px;  color: #222222;
-    text-align: left; font-weight: bold;
-}
-div.xowiki-content h4 {
-    /* font-size: 12px; */
-    margin: 0;
-}
+/* headings 
+
+
 div.xowiki-content .box {border: 1px solid #a1a5a9; padding: 0 5px 5px 5px; margin: 0 0 1.25em 0;}
-div.xowiki-content .errorMsg {background: #FFF; color: red; font-weight: bold;}
+div.xowiki-content .errorMsg {color: red; font-weight: bold;}
 div.xowiki-content .hr {
     height: 1px; border: none; 
     background-color: silver;
@@ -194,7 +171,7 @@ img.undefined {border-width: 2px; border-color: #859db8; height: 8px;}
 #left-col80 {float: left; width: 79%; top: 0px;}
 
 #right-col20 {float: right; width: 14%; top: 0px; margin-right: 10px;}
-#right-col25 {float: right; width: 24%; top: 0px; margin-right: 10px;}
+#right-col25 {float: right; width: 24%; top: 0px; margin-right: 0px;}
 #right-col30 {float: right; width: 29%; top: 0px; margin-right: 10px;}
 #right-col70 {float: right; width: 69%; top: 0px;}
 #right-col75 {float: right; width: 74%; top: 0px;}
@@ -213,25 +190,32 @@ img.undefined {border-width: 2px; border-color: #859db8; height: 8px;}
 	text-decoration:none;
 	margin:0;
 	margin-right:10px;}
-a:hover.rss {color:#dddddd;background: #F60;}
-a:visited.rss {color: #FFF;background: #F60;}
-a:link.rss {color: #FFF;background: #F60;}
+a:hover.rss {color:#dddddd;}
+a:visited.rss {color: #FFF;}
+a:link.rss {color: #FFF;}
 
-div.rightbox {float:right; right: 1em; clear: right; font-size: 75%; padding: 5px;
-    border:dotted; border-width:1px;background: #f8f8f8;
-}
-div.presence div.title {font-size: 90%; margin-bottom: 0px;
-        border-bottom: solid silver 1px; color: #222222; 
+div.rightbox {
+	float:right; 
+	right: 1em; 
+	clear: right; 
+	font-size: 75%; 
+	padding: 5px;
+	position: absolute;
+	top: 0px;
+	right: 5px;
+	z-index: 2000;
+	margin-top: 0em;
+	background: #fff;
 }
 
-div.xowiki-content a.missing {
-    color: red;
-    text-decoration: none;
+
+div.presence div.title {
+	font-size: 90%; 
+	margin-bottom: 0px;
+        border-bottom: solid silver 1px; 
+	color: #222222; 
 }
-div.xowiki-content a.missing:hover {
-    text-decoration: underline;
-    background: none;
-}
+
 
 div.xowiki-content pre, .code {
     font-family: "Courier", monospace;
@@ -247,6 +231,7 @@ div.xowiki-content pre, div.code {
     margin-right: 15px;
     margin-left: 15px;
     margin-bottom: 15px;
+    margin-top: 15px;
     padding: 5px 5px;
     background-color: #FFFFF8;
     border: #cccccc 1px solid;
@@ -279,12 +264,23 @@ div.news-item h2 {display: inline; font-weight: bolder;}
 div.xowiki-content .item-footer {
     clear: both;
     text-align: left; font-size: 85%;
-    margin-left: 10px; margin-right: 10px; margin-top: 5px;
+    margin-left: 0px; 
+    margin-right: 10px; margin-top: 5px;
     padding-top: 5px;
     border-top: 1px solid; border-color: #c8c8c8; 
     color: #555555;
+    width: 620px;
 }
-div.xowiki-content .content-chunk-footer {clear: both;}
+
+.po-survey {
+    text-align: left; font-size: 85%;
+    margin-left: 240px; margin-right: 10px; margin-top: 5px;
+    padding-top: 5px;
+    color: #555555;
+    width: 620px;
+}
+
+div.xowiki-content .content-chunk-footer {clear: both; padding-top:20px;}
 div.xowiki-content .image-button img {border: 0px;}
 
 div.book-navigation img {border: 0px;}
@@ -317,15 +313,6 @@ div.xowiki-content .margin-form .form-button, .margin-form div.form-help-text {
 div.recent div.portlet .list-table td.list {
     padding: 8px 4px;
 }
-
-/* includelet "categories-recent" */
-div.categories-recent .date {
-    font-size: 85%;
-    font-weight: bold;
-    color: #9a9a9b;
-}
-
-/* inherited markup */
 div.xowiki-content a.inherited {
     background: url(/resources/acs-subsite/arrow-down.gif) right center no-repeat; 
     padding-right: 14px;
@@ -436,35 +423,10 @@ div.xowiki-content  div.hidden-field-set > div.form-widget > .compound-field {
 }
 
 
+
 div.xowiki-content .margin-form fieldset .form-item-wrapper {
     padding: 0px 0px 0px 0px;
 }
-
-/* folder menu placement */
-
-div.xowiki-content div.folders {
-    float:left; width: 200px; 
-    font-size: 90%;
-}
-div.xowiki-content .content-with-folders {
-    float: left; width: 70%;
-}
-div.xowiki-content .content-with-folders div.form-label {
-    width: 9em;
-}
-div.xowiki-content .content-with-folders div.form-widget,  
-div.xowiki-content .content-with-folders .form-help-text,
-div.xowiki-content .content-with-folders .form-button,
-div.xowiki-content .content-with-folders .form-widget-error,
-div.xowiki-content .content-with-folders .form-error {
-    margin-left: 10em;
-}
-
-div.xowiki-content #menubar a.disabled {
-    color: #A0A0A0;
-    /* or maybe display none */
-}
-
 
 /* mc stuff */
 div.xowiki-content table.mchoice td.selection {
@@ -476,40 +438,221 @@ div.xowiki-content form.feedback td.selection {
     padding: 0px 5px 0px 25px;
 }
 
-/* linear forum stuff */
-div.xowiki-content {
-    text-align: left;
+
+.roundedcornr_box_757569 {
+   background: #ffffff url(roundedcornr_757569_grad.gif) repeat-x top left;
 }
-div.xowiki-content .forum .question {
+.roundedcornr_top_757569 div {
+   background: url(roundedcornr_757569_tl.gif) no-repeat top left;
 }
-div.xowiki-content .forum .responses {
+.roundedcornr_top_757569 {
+   background: transparent url(roundedcornr_757569_tr.gif) no-repeat top right;
+}
+.roundedcornr_bottom_757569 div {
+   background: url(roundedcornr_757569_bl.gif) no-repeat bottom left;
+}
+.roundedcornr_bottom_757569 {
+   background: transparent url(roundedcornr_757569_br.gif) no-repeat bottom right;
 }
 
-div.xowiki-content .forum .cite.photo {
-    float: left;
-    width: 190px;
+.roundedcornr_top_757569 div, .roundedcornr_top_757569,
+.roundedcornr_bottom_757569 div, .roundedcornr_bottom_757569 {
+   width: 100%;
+   height: 20px;
+   font-size: 1px;
 }
-div.xowiki-content .forum .cite {
-    float: left;
-    width: 100px;
+.roundedcornr_content_757569 { margin: 0 20px; }
+
+
+#wiki_table_reg_users {
+	display: none;
 }
-div.xowiki-content .forum .question-text {
-    margin-left: 200px;
+
+#wikiMessRegUsers {
+	display: inline;
 }
-div.xowiki-content .forum .question-text.nophoto {
-    margin-left: 110px;
+
+div.xowiki-content ul {
+	margin-top: 7px;
 }
-div.xowiki-content .forum .cite .photo {
-    float: right;
-    margin-left: 4px;
+
+ul.mktree, ul.mktree ul {
+        margin-top: 0px;
 }
-div.xowiki-content .forum  .cite p.author {
-    margin-bottom: 0px;
-    text-align: right;
+
+
+#navbar_main_wrapper ul {
+	padding: 0px 0px 0 0;
 }
-div.xowiki-content .forum .cite p.date {
-    text-align: right;
-    font-size: 85%;
-    color: #777777;
-    
+
+.steps {
+	font-size: 1.1em;
+}
+
+
+#do_search {
+        position: relative;
+        top: -17px;
+        right: 0px;
+        height: 0px;
+        text-align: right;
+        font-family: sans-serif;
+	font-weight:bold;
+	display: block;
+}
+
+#mission .box {
+border:1px solid #808080;
+color:#333333;
+margin-left:0px;
+margin-right:20px;
+background-color:#F8F8F8;
+}
+
+#mission .box_no_border {
+color:#4E3000;
+margin-left:0px;
+/* margin-right:360px; */
+}
+
+#mission .box .w1 {
+background-position:0 0;
+background-repeat:no-repeat;
+left:-1px;
+position:relative;
+top:-1px;
+/* margin-bottom: -40px; */
+
+}
+#mission .box .w2 {
+background-position:100% 0;
+background-repeat:no-repeat;
+left:2px;
+position:relative;
+}
+
+#mission .box .w3 {
+background-position:100% 100%;
+background-repeat:no-repeat;
+position:relative;
+top:2px;
+}
+
+#mission .box .w4 {
+background-position:0 100%;
+background-repeat:no-repeat;
+left:-2px;
+min-height:125px;
+padding:16px 16px 16px 16px;
+position:relative;
+z-index:10;
+}
+ul#missionlinks {
+list-style-type:none;
+margin:0;
+padding:0;
+width:100%;
+}
+ul#missionlinks li {
+display:block;
+float:left;
+margin:0;
+width:49%;
+}
+
+#download {
+/* background-color:#E7F2D8;
+border:1px solid #74A03A;
+color:#17512B; */
+float:right;
+position:relative;
+z-index:100;
+}
+
+
+#mission .box .w4 ul li {
+	font-size:1.4em;
+	/* font-weight: bold; */
+	margin-bottom:5px;  
+}
+
+#mission .box .w1 .w2 .w3 .w4 .rss-client .portlet ul li {
+	color:#5E5E5E;
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:13px;
+	line-height:140%;
+	margin-bottom: 10px;
+        font-weight: normal;
+}
+
+.portlet-title-no-controls {
+	visibility:hidden;
+}
+
+
+.rss-client {
+	width:100%; 
+}
+
+/* CONTACT FORM */ 
+
+.form_block_question {
+	position:relative;
+	float: left;
+}
+.form_block_answer {
+	margin-left: 200px;
+	position:relative;
+}
+.answer_block {
+	margin-top:10px;
+	position:absolute;
+}
+#contact_form {
+	margin-top:180px;
+	position:relative;
+}
+
+
+#three_left {
+	position: absolute;
+	top: 100px;
+	left: 0px;
+	padding: 10px;
+	width: 150px; /* ie5win fudge begins */
+	voice-family: "\"}\"";
+	voice-family:inherit;
+	width: 220px;
+	font-size: 80%; 
+}
+
+html>body #three_left {
+	width: 220px; /* ie5win fudge ends */
+}
+
+#three_middle {
+	margin: 0px 5px 20px 230px; /* n6.01win n6mac 
+	won't recognize top margin for middle box, so it 
+	goes in body */
+	padding: 10px;
+}
+
+#three_right {
+        width: 120px;
+        margin-top: 64px;
+
+}
+
+html>body #three_right {
+	width: 120px; /* ie5win fudge ends */
+}
+
+.std_table {
+	line-height:140%;
+	 padding: 8px 8px;
+}
+
+.std_table td {
+	border: 1px solid #999999;
+	padding: 8px;
 }
