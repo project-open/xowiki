@@ -1289,6 +1289,9 @@ namespace eval ::xowiki {
     #
     #my log "get_page_from_item_ref [self args]"
 
+      # fraber 130116: Fixing hard "variable not found" issue...
+      set rest_link ""
+
     if {$allow_cross_package_item_refs && [string match //* $link]} {
 
       # todo check: get_package_id_from_page_name uses a different lookup based on site nodes 
