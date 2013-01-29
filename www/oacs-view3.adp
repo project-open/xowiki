@@ -71,6 +71,8 @@ function get_popular_tags(popular_tags_link, prefix) {
   <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>	
 <div class='xowiki-content'>
 <div id='wikicmds'>
+  <if @login_link@ not nil><a href="@login_link@" accesskey='l' title='#xowiki.login_title#'>#xowiki.login#</a> &middot; </if>
+  <if @logout_link@ not nil><a href="@logout_link@" accesskey='l' title='#xowiki.logout_title#'>#xowiki.logout#</a> &middot; </if>
   <if @view_link@ not nil><a href="@view_link@" accesskey='v' title='#xowiki.view_title#'>#xowiki.view#</a> &middot; </if>
   <if @edit_link@ not nil><a href="@edit_link@" accesskey='e' title='#xowiki.edit_title#'>#xowiki.edit#</a> &middot; </if>
   <if @rev_link@ not nil><a href="@rev_link@" accesskey='r' title='#xowiki.revisions_title#'>#xotcl-core.revisions#</a> &middot; </if>

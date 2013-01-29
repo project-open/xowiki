@@ -1283,6 +1283,13 @@ namespace eval ::xowiki {
       #my log "--after context delete_link=$delete_link "
       #$context_package_id instvar folder_id  ;# this is the root folder
       #set template [$folder_id get_payload template]
+
+        if {[::xo::cc user_id] != 0} {
+            set logout_link "/register/logout"
+        } else {
+            set login_link "/register/index"
+        }
+
       set template [$context_package_id get_parameter "template" ""]
       set page [self]
 
