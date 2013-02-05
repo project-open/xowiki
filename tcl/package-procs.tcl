@@ -688,7 +688,7 @@ namespace eval ::xowiki {
       # an optional link for creating the page
       set path [::xowiki::Includelet html_encode [my set object]]
       set edit_snippet [my create_new_snippet $path]
-      return [my error_msg -status_code 404 -template_file $error_template \
+      return [my error_msg -status_code 200 -template_file $error_template \
 		  "Page <b>'$path'</b> is not available. $edit_snippet"]
     }
   }
@@ -1258,13 +1258,15 @@ namespace eval ::xowiki {
     if {$(item_id) == 0} {
       # check link (todo should happen in package->lookup?)
       ::xo::db::CrClass get_instance_from_db -item_id $(parent_id)
-      if {[$(parent_id) is_link_page] && [$(parent_id) is_folder_page]} {
-	set target [$(parent_id) get_target_from_link_page]
-	#$target set_resolve_context -package_id [my id] -parent_id $(parent_id)
-	#my msg "LINK prefixed LOOKUP from target-package [$target package_id] source package [my id]"
-	array set "" [[$target package_id] prefixed_lookup -parent_id [$target item_id] \
-			  -default_lang $default_lang -lang $(lang) -stripped_name $(stripped_name)]
-	#my msg "-lang $(lang) -stripped_name $(stripped_name) => got=$(item_id)"
+      catch {
+	  if {[$(parent_id) is_link_page] && [$(parent_id) is_folder_page]} {
+	      set target [$(parent_id) get_target_from_link_page]
+	      #$target set_resolve_context -package_id [my id] -parent_id $(parent_id)
+	      #my msg "LINK prefixed LOOKUP from target-package [$target package_id] source package [my id]"
+	      array set "" [[$target package_id] prefixed_lookup -parent_id [$target item_id] \
+				-default_lang $default_lang -lang $(lang) -stripped_name $(stripped_name)]
+	      #my msg "-lang $(lang) -stripped_name $(stripped_name) => got=$(item_id)"
+	  }
       }
     }
     return [array get ""]
