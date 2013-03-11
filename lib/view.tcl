@@ -25,6 +25,7 @@ if {![info exists css]} {
     set fn [get_server_root]/packages/xowiki/www/resources/xowiki.css
     set F [open $fn]; set css [read $F]; close $F
     set css "<style type='text/css'>$css</style>"
-    set html $css$html
+    # set html $css$html
 }
+
 
