@@ -31,6 +31,7 @@ if {![info exists return_url]} { set return_url [im_url_with_query] }
 set url [ns_conn url]
 set url_pieces [split $url "/"]
 set last_url_piece [lindex $url_pieces end]
+set user_id [ad_get_user_id]
 
 # Convert the name of the page into project_id, user_id or ticket_id
 if {![info exists project_id]} {
@@ -65,7 +66,13 @@ if {"" == $plugin_id} {
 if {"" == $plugin_id} {
     set result "<pre>
 <b>[lang::message::lookup "" intranet-core.Portlet_not_Specified "Portlet Not Specified"]</b>:
-[lang::message::lookup "" intranet-core.Portlet_not_Specified_msg "You need to specify either 'plugin_id' or 'plugin_name' and 'package_key'."]
+[lang::message::lookup "" intranet-core.Portlet_not_Specified_msg "You need to specify either 'plugin_id' or 'plugin_name' and 'package_key'."]<br>
+<pre>
+plugin_id=$plugin_id
+plugin_name=$plugin_name
+package_key=$package_key
+parameter_list=$parameter_list
+</pre>
 "
     doc_return 200 "text/html" $result
     ad_script_abort
