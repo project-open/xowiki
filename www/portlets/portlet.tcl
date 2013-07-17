@@ -38,6 +38,10 @@ if {![info exists project_id]} {
     set project_id [db_string pid "select project_id from im_projects where project_nr = :last_url_piece" -default ""]
 }
 
+if {"" == $project_id} { 
+    set project_id  [db_string pid "select max(project_id) from im_projects where parent_id is null" -default ""] 
+}
+
 
 # -------------------------------------------------------------
 # Get the plugin_id from available data
