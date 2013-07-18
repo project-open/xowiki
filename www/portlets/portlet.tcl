@@ -82,27 +82,30 @@ parameter_list=$parameter_list
     ad_script_abort
 }
 
+# -------------------------------------------------------------
+# Security
+# -------------------------------------------------------------
+
+set current_user_id [ad_get_user_id]
+set any_perms_set_p [im_component_any_perms_set_p]
+
+
 # Get everything about the portlet
 if {![db_0or1row plugin_info "
-	select	*
-	from	im_component_plugins
-	where	plugin_id = :plugin_id
+	select	cp.*,
+		im_object_permission_p(cp.plugin_id, :current_user_id, 'read') as perm
+	from	im_component_plugins cp
+	where	cp.plugin_id = :plugin_id
 "]} {
     ad_return_complaint 1 "Didn't find plugin #$plugin_id"
     ad_script_abort
 }
 
+# ad_return_complaint 1 "$current_user_id - $any_perms_set_p - $perm - $plugin_name"
 
-# -------------------------------------------------------------
-# Security
-# -------------------------------------------------------------
-
-set perm_p [im_object_permission -object_id $plugin_id]
-if {!$perm_p} {
-    set result "<pre>[lang::message::lookup "" intranet-core.You_dont_have_permissions_to_access_this_portlet "
-    You don't have sufficient permissions to access this portlet"]"
-    doc_return 200 "text/html" $result
-    ad_script_abort
+if {$any_perms_set_p > 0 && "f" == $perm} {
+    set result ""
+    ad_return_template
 }
 
 # -------------------------------------------------------------
