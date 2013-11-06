@@ -277,7 +277,6 @@ div.xowiki-content .item-footer {
     margin-left: 240px; margin-right: 10px; margin-top: 5px;
     padding-top: 5px;
     color: #555555;
-    width: 620px;
 }
 
 div.xowiki-content .content-chunk-footer {clear: both; padding-top:20px;}
@@ -499,6 +498,8 @@ ul.mktree, ul.mktree ul {
         font-family: sans-serif;
 	font-weight:bold;
 	display: block;
+	width: 400px;
+	float: right; 
 }
 
 #mission .box {
@@ -631,16 +632,17 @@ html>body #three_left {
 }
 
 #three_middle {
-	margin: 0px 5px 20px 230px; /* n6.01win n6mac 
+	margin: 0px 5px 20px 215px; /* n6.01win n6mac 
 	won't recognize top margin for middle box, so it 
 	goes in body */
 	padding: 10px;
 }
 
 #three_right {
-        width: 120px;
-        margin-top: 64px;
-
+    width: 120px;
+    margin-top: 8px;
+    display: block;
+    margin-left: 20px;
 }
 
 html>body #three_right {
