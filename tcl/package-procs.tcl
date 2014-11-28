@@ -2317,6 +2317,66 @@ namespace eval ::xowiki {
     }
   }
 
+
+  Policy policy6 -contains {
+
+      Class Package -array set require_permission {
+          reindex             swa
+          change-page-order   {{id admin}}
+          import-prototype-page swa
+          refresh-login       login
+          rss                 login
+          google-sitemap      login
+          google-sitemapindex login
+          manage-categories   {{id admin}}
+          edit-category-tree  {{id admin}}
+          delete              {{id admin}}
+          edit-new            {
+              {{has_class ::xowiki::Object} swa}
+              {{has_class ::xowiki::FormPage} nobody}
+              {{has_name {[.](js|css)$}} id admin}
+              {id create}
+          }
+      }
+
+      Class Page -array set require_permission {
+          view               {{parent_id create}}
+          revisions          {{package_id write}}
+          diff               {{package_id write}}
+          edit               {
+              {{regexp {name {(weblog|index)$}}} package_id admin}
+              {package_id write}
+          }
+          save-form-data     {{package_id write}}
+          save-attributes    {{package_id write}}
+          make-live-revision {{package_id write}}
+          delete-revision    {{package_id admin}}
+          delete             {{package_id admin}}
+          save-tags          login
+          popular-tags       login
+          create-new         {{parent_id create}}
+          create-or-use      {{parent_id create}}
+      } -set default_permission {{package_id write}}
+
+      Class Object -array set require_permission {
+          edit               swa
+      }
+      Class File -array set require_permission {
+          download           login
+      }
+      Class Form -array set require_permission {
+          list              {{package_id read}}
+          edit              admin
+          view              admin
+      }
+      Class CrFolder -array set require_permission {
+          view           login
+          delete         {{package_id admin}}
+          edit-new       {{item_id write}}
+      }
+
+  }
+
 }
 
 ::xo::library source_dependent 
