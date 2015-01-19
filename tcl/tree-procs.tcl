@@ -233,7 +233,7 @@ namespace eval ::xowiki {
     if {![$item exists encoded(prefix)]} {set prefix [::xowiki::Includelet html_encode $prefix]}
     if {![$item exists encoded(suffix)]} {set suffix [::xowiki::Includelet html_encode $suffix]}
     append entry \
-	$prefix "<a href='$href'>" [::xowiki::Includelet html_encode $title] "</a>" $suffix
+    	$prefix "<a href='$href'>" [::xowiki::Includelet html_encode $title] "</a>" $suffix
     if {$highlight} {
       return "<li class='liItem'><b>$entry</b></li>\n"
     } else {
@@ -286,6 +286,55 @@ namespace eval ::xowiki {
   TreeRenderer=mktree proc render {tree} {
     return "<ul class='mktree' id='[$tree id]'>[next]</ul>"
   }
+
+
+  # CUSTOMIZATION PROJOP --------------------------------------------
+
+  # List specific renderer BOOTSTRAP template 
+  TreeRenderer create TreeRenderer=bootstrap \
+      -superclass TreeRenderer=list 
+
+   TreeRenderer=bootstrap proc render {tree} {
+      return "<ul id='[$tree id]'>[next]</ul>"
+  }
+
+  TreeRenderer=bootstrap instproc render_item {{-highlight:boolean false} item} {
+    $item instvar title href
+      set prefix [$item set prefix]
+      set suffix [$item set suffix]
+      if {![$item exists encoded(prefix)]} {set prefix [::xowiki::Includelet html_encode $prefix]}
+      if {![$item exists encoded(suffix)]} {set suffix [::xowiki::Includelet html_encode $suffix]}
+    append entry \
+        $prefix "<a href='$href'>" [::xowiki::Includelet html_encode $title] "</a>" $suffix
+      if {$highlight} {
+      return "<li><b>$entry</b></li>\n"
+      } else {
+      return "<li>$entry</li>\n"
+      }
+  }
+
+  TreeRenderer=bootstrap instproc render_node {{-open:boolean false} cat_content} {
+
+      set label [::xowiki::Includelet html_encode [my label]]
+      if {[my exists count]} {
+	  set entry "$label <a href='[my href]'>([my count])</a>"
+      } else {
+	  if {[my href] ne ""} {
+	      set entry "<a href='[my href]'>$label</a>"
+	  } else {
+	      set entry "<a href='#'>[my label]</a>"
+	  }
+      }
+      if {$cat_content ne ""} {
+	  set content "\n<ul>\n$cat_content</ul>"
+      } else {
+	  set content ""
+      }
+      return "<li>$entry $content </li>"
+  }
+
+
+  # /CUSTOMIZATION PROJOP -------------------------------------------
 
   #
   # List-specific renderer based for some menus
