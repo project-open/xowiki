@@ -34,13 +34,19 @@ set last_url_piece [lindex $url_pieces end]
 set user_id [ad_get_user_id]
 
 # Convert the name of the page into project_id, user_id or ticket_id
-if {![info exists project_id]} {
-    set project_id [db_string pid "select project_id from im_projects where project_nr = :last_url_piece" -default ""]
-}
+if {![info exists project_id]} { set project_id [db_string pid "select project_id from im_projects where project_nr = :last_url_piece" -default ""] }
+if {"" == $project_id} { set project_id  [db_string pid "select max(project_id) from im_projects where parent_id is null" -default ""] }
 
-if {"" == $project_id} { 
-    set project_id  [db_string pid "select max(project_id) from im_projects where parent_id is null" -default ""] 
-}
+
+# Convert the name of the page into company_id, user_id or ticket_id
+if {![info exists company_id]} { set company_id [db_string pid "select company_id from im_companies where company_path = :last_url_piece" -default ""] }
+if {"" == $company_id} { set company_id  [db_string pid "select max(company_id) from im_companies" -default ""] }
+
+
+# Convert the name of the page into conf_item_id, user_id or ticket_id
+if {![info exists conf_item_id]} { set conf_item_id [db_string pid "select conf_item_id from im_conf_items where conf_item_nr = :last_url_piece" -default ""] }
+if {"" == $conf_item_id} { set conf_item_id  [db_string pid "select max(conf_item_id) from im_conf_items" -default ""] }
+
 
 
 # -------------------------------------------------------------

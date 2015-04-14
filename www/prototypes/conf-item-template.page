@@ -1,0 +1,21 @@
+::xowiki::Page new -title "conf-item-template" -text {
+<p>This is some text at the very top of the page.</p>
+
+>>right-col<<
+<p>This is the beginning of the right column.</p>
+<p>
+{{adp portlets/portlet {portlet "Conf Item Members"}}} <br />
+{{adp portlets/portlet {portlet "Conf Item Related Objects"}}} <br />
+</p>
+<p>This is the end of the right column.</p>
+>><<
+
+<p>
+<p>This is the beginning of the main or left column.</p>
+{{adp portlets/portlet {portlet "Conf Item Base Data"}}} <br />
+{{adp portlets/portlet {portlet "Conf Item CVS Logs"}}} <br />
+{{adp portlets/portlet {portlet "Conf Item Filestorage"}}} <br />  
+</p>
+<p>This is the end of the main or left column.</p>
+
+}
