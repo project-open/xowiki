@@ -69,8 +69,8 @@ if {"" == $plugin_id} {
 
 if {"" == $plugin_id} {
     set result "<pre>
-<b>[lang::message::lookup "" intranet-core.Portlet_not_Specified "Portlet Not Specified"]</b>:
-[lang::message::lookup "" intranet-core.Portlet_not_Specified_msg "You need to specify either 'plugin_id' or 'plugin_name' and 'package_key'."]<br>
+<b>[lang::message::lookup "" intranet-core.Portlet_not_Found "Portlet Not Found"]</b>:
+[lang::message::lookup "" intranet-core.Portlet_not_Specified_msg "Either you did not specify 'plugin_id' or we did not find 'plugin_name' or 'package_key'."]<br>
 <pre>
 plugin_id=$plugin_id
 plugin_name=$plugin_name
@@ -88,6 +88,8 @@ parameter_list=$parameter_list
 
 set current_user_id [ad_get_user_id]
 set any_perms_set_p [im_component_any_perms_set_p]
+set user_admin_p [im_is_user_site_wide_or_intranet_admin $current_user_id]
+set current_url [im_url_with_query]
 
 
 # Get everything about the portlet
