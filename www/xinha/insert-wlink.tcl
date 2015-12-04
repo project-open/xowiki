@@ -1,7 +1,7 @@
 ad_page_contract {
 	popup for choosing a target for wiki link
 } {
-	{package_id:integer}
+	{package_id:naturalnum,notnull}
 	{page_number:integer 1}
 	{page_size:integer 20}
 }
@@ -57,3 +57,9 @@ foreach entry [$listing children] {
 }
 
 set t1 [t1 asHTML]
+
+# Local variables:
+#    mode: tcl
+#    tcl-indent-level: 2
+#    indent-tabs-mode: nil
+# End:

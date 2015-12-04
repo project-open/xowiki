@@ -1,7 +1,7 @@
 <master>
-  <property name="title">@edit_form_page_title;noquote@</property>
+  <property name="doc(title)">@edit_form_page_title;literal@</property>
   <property name="&doc">property_doc</property>
-  <property name="context">@context;noquote@</property>
+  <property name="context">@context;literal@</property>
   <property name="focus">note.title</property>
 
 <style type='text/css'>
@@ -21,4 +21,4 @@
    <if @index_link@ not nil><a href="@index_link@" accesskey='i'>#xowiki.index#</a></if>
 </div>
   
-<formtemplate id="@formTemplate@"></formtemplate>
+<formtemplate id="@formTemplate;literal@"></formtemplate>

@@ -62,11 +62,11 @@ namespace eval ::xowiki {
 namespace eval ::xowiki::notification {
 
   ad_proc -private get_url {id} {
-    if {[db_0or1row is_package_id "select 1 from apm_packages where package_id = $id"]} {
+    if {[::xo::dc 0or1row is_package_id {select 1 from apm_packages where package_id = :id}]} {
       #
       # the specified id is an package_id
       #
-      set node_id [db_string get_node_id "select node_id from site_nodes where object_id = $id"]
+      set node_id [::xo::dc get_value get_node_id {select node_id from site_nodes where object_id = :id}]
       set url [site_node::get_url -node_id $node_id]
       return $url
     }
@@ -115,11 +115,13 @@ namespace eval ::xowiki::notification {
     #ns_log notice "--n xowiki::notification::do_notifications called for item_id [$page set revision_id] publish_status=[$page set publish_status] XXX"
     $page instvar package_id
     set link [$page pretty_link -absolute 1]
-    append html "<p>For more details, see <a href='$link'>[$page set title]</a></p>"
+    append html "<p>For more details, see <a href='[ns_quotehtml $link]'>[ns_quotehtml [$page set title]]</a></p>"
     append text "\nFor more details, see $link ...<hr>\n"
 
     set state [expr {[$page set last_modified] eq [$page set creation_date] ? "New" : "Updated"}]
     set instance_name [::$package_id instance_name]
+
+    set notif_user_id [expr {[$page exists modifying_user] ? [$page set modifying_user] :  [$page set creation_user]}]
 
     #ns_log notice "--n per directory [$page set title] ($state)"
     notification::new \
@@ -129,7 +131,7 @@ namespace eval ::xowiki::notification {
         -notif_subject "\[$instance_name\] [$page set title] ($state)" \
         -notif_text $text \
         -notif_html $html \
-        -notif_user [expr {[$page exists modifying_user] ? [$page set modifying_user] :  [$page set creation_user]}]
+        -notif_user $notif_user_id
 
     #ns_log notice "--n find categories [$page set title] ($state)"
 
@@ -138,7 +140,7 @@ namespace eval ::xowiki::notification {
       array unset cat
       array unset label
       foreach category_info [::xowiki::Category get_category_infos -tree_id $tree_id] {
-        foreach {category_id category_label deprecated_p level} $category_info {break}
+        lassign $category_info category_id category_label deprecated_p level
         set cat($level) $category_id
         set label($level) $category_label
         if {$category_id == $cat_id} break
@@ -152,7 +154,7 @@ namespace eval ::xowiki::notification {
             -notif_subject "\[$instance_name\] $label($level): [$page set title] ($state)" \
             -notif_text $text \
             -notif_html $html \
-            -notif_user [$page set creation_user]
+            -notif_user $notif_user_id
       }
     }
   }
@@ -173,3 +175,9 @@ namespace eval ::xowiki::notification {
 }
 ::xo::library source_dependent 
 
+#
+# Local variables:
+#    mode: tcl
+#    tcl-indent-level: 2
+#    indent-tabs-mode: nil
+# End:

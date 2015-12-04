@@ -1,9 +1,9 @@
 ::xo::library doc {
-    Classes for creating, manageing and rendering trees
+  Classes for creating, manageing and rendering trees
 
-    @creation-date 2009-05-29
-    @author Gustaf Neumann
-    @cvs-id $Id$
+  @creation-date 2009-05-29
+  @author Gustaf Neumann
+  @cvs-id $Id$
 }
 
 namespace eval ::xowiki {
@@ -13,11 +13,11 @@ namespace eval ::xowiki {
   # This class manages the creation and rendering of the nodes of the
   # tree. It provides a name and id for rending in HTML.
 
-  Class Tree \
+  Class create Tree \
       -superclass ::xo::OrderedComposite \
       -parameter {
-	{name ""} 
-	id
+        {name ""} 
+        id
       }
 
   # 
@@ -32,7 +32,7 @@ namespace eval ::xowiki {
   }
 
   Tree proc include_head_entries {{-renderer mktree} args} {
-    eval [my renderer $renderer] include_head_entries $args
+    [my renderer $renderer] include_head_entries {*}$args
   }
 
   #
@@ -102,18 +102,18 @@ namespace eval ::xowiki {
       set level [regsub -all {[.]} [$o set page_order] _ page_order_js]
       if {$full || [my exists open_node($parent)] || [my exists open_node($page_order)]} {
         set href [$owner href $book_mode $name]
-	set is_current [expr {$open_page eq $name}]
+        set is_current [expr {$open_page eq $name}]
         set is_open [expr {$is_current || $expand_all}]
         set c [::xowiki::TreeNode new -orderby pos -pos [incr pos] -level $level \
-		   -object $o -owner [self] \
-		   -label $title -prefix $page_number -href $href \
-		   -highlight $is_current \
-		   -expanded $is_open \
-		   -open_requests 1]
+                   -object $o -owner [self] \
+                   -label $title -prefix $page_number -href $href \
+                   -highlight $is_current \
+                   -expanded $is_open \
+                   -open_requests 1]
         set tree($level) $c
-	for {set l [expr {$level - 1}]} {![info exists tree($l)]} {incr l -1} {}
+        for {set l [expr {$level - 1}]} {![info exists tree($l)]} {incr l -1} {}
         $tree($l) add $c
-	if {$is_open} {$c open_tree}
+        if {$is_open} {$c open_tree}
       }
     }
     return $tree(-1)
@@ -128,7 +128,7 @@ namespace eval ::xowiki {
   # associated categorized items, which can be added via the method
   # "add_item".
   #
-  Class TreeNode -superclass Tree -parameter {
+  Class create TreeNode -superclass Tree -parameter {
     level label pos {open_requests 0} count {href ""} 
     object owner li_id ul_id ul_class
     {prefix ""} {expanded false} {highlight false}
@@ -183,9 +183,9 @@ namespace eval ::xowiki {
 
   Class create TreeRenderer -superclass Class \
       -parameter {
-	{subtree_wrapper_class}
-	{li_expanded_atts ""}
-	{highlight_atts {"style = 'font-weight:bold;'"}}
+        {subtree_wrapper_class}
+        {li_expanded_atts ""}
+        {highlight_atts {"style = 'font-weight:bold;'"}}
       }
   TreeRenderer instproc include_head_entries {args} {
     # to be overloaded
@@ -233,7 +233,7 @@ namespace eval ::xowiki {
     if {![$item exists encoded(prefix)]} {set prefix [::xowiki::Includelet html_encode $prefix]}
     if {![$item exists encoded(suffix)]} {set suffix [::xowiki::Includelet html_encode $suffix]}
     append entry \
-    	$prefix "<a href='$href'>" [::xowiki::Includelet html_encode $title] "</a>" $suffix
+        $prefix "<a href='[ns_quotehtml $href]'>" [::xowiki::Includelet html_encode $title] "</a>" $suffix
     if {$highlight} {
       return "<li class='liItem'><b>$entry</b></li>\n"
     } else {
@@ -253,12 +253,12 @@ namespace eval ::xowiki {
 
     set label [::xowiki::Includelet html_encode [my label]]
     if {[my exists count]} {
-      set entry "$label <a href='[my href]'>([my count])</a>"
+      set entry "$label <a href='[ns_quotehtml [my href]]'>([my count])</a>"
     } else {
       if {[my href] ne ""} {
-	set entry "<a href='[my href]'>$label</a>"
+        set entry "<a href='[ns_quotehtml [my href]]'>[ns_quotehtml $label]</a>"
       } else {
-	set entry [my label]
+        set entry [my label]
       }
     }
     if {$cat_content ne ""} {
@@ -287,55 +287,6 @@ namespace eval ::xowiki {
     return "<ul class='mktree' id='[$tree id]'>[next]</ul>"
   }
 
-
-  # CUSTOMIZATION PROJOP --------------------------------------------
-
-  # List specific renderer BOOTSTRAP template 
-  TreeRenderer create TreeRenderer=bootstrap \
-      -superclass TreeRenderer=list 
-
-   TreeRenderer=bootstrap proc render {tree} {
-      return "<ul id='[$tree id]'>[next]</ul>"
-  }
-
-  TreeRenderer=bootstrap instproc render_item {{-highlight:boolean false} item} {
-    $item instvar title href
-      set prefix [$item set prefix]
-      set suffix [$item set suffix]
-      if {![$item exists encoded(prefix)]} {set prefix [::xowiki::Includelet html_encode $prefix]}
-      if {![$item exists encoded(suffix)]} {set suffix [::xowiki::Includelet html_encode $suffix]}
-    append entry \
-        $prefix "<a href='$href'>" [::xowiki::Includelet html_encode $title] "</a>" $suffix
-      if {$highlight} {
-      return "<li><b>$entry</b></li>\n"
-      } else {
-      return "<li>$entry</li>\n"
-      }
-  }
-
-  TreeRenderer=bootstrap instproc render_node {{-open:boolean false} cat_content} {
-
-      set label [::xowiki::Includelet html_encode [my label]]
-      if {[my exists count]} {
-	  set entry "$label <a href='[my href]'>([my count])</a>"
-      } else {
-	  if {[my href] ne ""} {
-	      set entry "<a href='[my href]'>$label</a>"
-	  } else {
-	      set entry "<a href='#'>[my label]</a>"
-	  }
-      }
-      if {$cat_content ne ""} {
-	  set content "\n<ul>\n$cat_content</ul>"
-      } else {
-	  set content ""
-      }
-      return "<li>$entry $content </li>"
-  }
-
-
-  # /CUSTOMIZATION PROJOP -------------------------------------------
-
   #
   # List-specific renderer based for some menus
   #
@@ -363,8 +314,10 @@ namespace eval ::xowiki {
     set ajaxhelper 1
     ::xowiki::Includelet require_YUI_CSS -ajaxhelper $ajaxhelper "fonts/fonts-min.css"
     ::xowiki::Includelet require_YUI_CSS -ajaxhelper $ajaxhelper \
-	"treeview/assets/skins/sam/treeview.css"
+        "treeview/assets/skins/sam/treeview.css"
     if {$style ne ""} {
+      # yuitree default css style files are in the assets directory
+      if {$style eq "yuitree"} {set style ""}
       ::xo::Page requireCSS "/resources/ajaxhelper/yui/treeview/assets/$style/tree.css"
     }
 
@@ -418,7 +371,7 @@ namespace eval ::xowiki {
 
     array set "" [$cl set context]
     my set ul_class [expr {[info exists (min_level)] && [my level] >= $(min_level) ?
-			   "page_order_region" : "page_order_region_no_target"}]
+                           "page_order_region" : "page_order_region_no_target"}]
     return [next]
   }
 
@@ -434,7 +387,7 @@ namespace eval ::xowiki {
     if {![$item exists encoded(prefix)]} {set prefix [::xowiki::Includelet html_encode $prefix]}
     if {![$item exists encoded(suffix)]} {set suffix [::xowiki::Includelet html_encode $suffix]}
     append entry \
-	$prefix "<a href='$href'>" [::xowiki::Includelet html_encode $title] "</a>" $suffix
+        $prefix "<a href='[ns_quotehtml $href]'>" [::xowiki::Includelet html_encode $title] "</a>" $suffix
     if {$highlight} {
       return "<b>$entry</b><br>\n"
     } else {
@@ -451,3 +404,9 @@ namespace eval ::xowiki {
 }
 ::xo::library source_dependent 
 
+#
+# Local variables:
+#    mode: tcl
+#    tcl-indent-level: 2
+#    indent-tabs-mode: nil
+# End:

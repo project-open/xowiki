@@ -7,7 +7,7 @@ ad_page_contract {
     @creation-date 13.07.2004
     @cvs-id $Id$
 } {
-    {parent_id:integer}
+    {parent_id:naturalnum,notnull}
     {selector_type "image"}
 }
 
@@ -143,3 +143,8 @@ if {[permission::permission_p -party_id $user_id -object_id $parent_id \
 
 set HTML_Preview "Preview"
 set HTML_UploadTitle ""
+# Local variables:
+#    mode: tcl
+#    tcl-indent-level: 2
+#    indent-tabs-mode: nil
+# End:

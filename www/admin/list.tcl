@@ -20,14 +20,16 @@ if {![info exists object_type]} {
   set per_type 0
   set supertype ::xowiki::Page
   set object_types [$supertype object_types]
-  set page_title "List of all kind of [$supertype set pretty_plural]"
+  set pretty_plural [$supertype set pretty_plural]
+  set page_title [_ xowiki.listing_title_all]
   set with_subtypes true
   set object_type $supertype
   set with_children true
 } else {
   set per_type 1
   set object_types [list $object_type]
-  set page_title "Index of [$object_type set pretty_plural]"
+  set pretty_plural [$object_type set pretty_plural]
+  set page_title [_ xowiki.listing_title]
   set with_subtypes false
   set with_children true
 }
@@ -56,12 +58,12 @@ foreach type $object_types {
 set ::individual_permissions [expr {[$package_id set policy] eq "::xowiki::policy3"}]
 set ::with_publish_status 1
 
-TableWidget t1 -volatile \
+TableWidget create t1 -volatile \
     -actions $actions \
     -columns {
       BulkAction objects -id name -actions {
-        Action new -label export -tooltip export -url export
-        Action new -label delete -tooltip delete -url bulk-delete
+        Action new -label [_ xowiki.export] -tooltip [_ xowiki.export] -url export
+        Action new -label [_ xowiki.delete] -tooltip [_ xowiki.delete] -url bulk-delete
       }
       AnchorField edit -CSSclass edit-item-button -label "" -html {style "padding: 0px;"}
       if {$::individual_permissions} {
@@ -71,7 +73,7 @@ TableWidget t1 -volatile \
       }
       if {$::with_publish_status} {
 	ImageAnchorField publish_status -orderby publish_status.src -src "" \
-	    -width 8 -height 8 -border 0 -title "Toggle Publish Status" \
+	    -width 8 -height 8 -title "Toggle Publish Status" \
             -alt "publish status" -label [_ xowiki.publish_status] -html {style "padding: 2px;text-align: center;"}
       }
       Field syndicated -label "RSS" -html {style "padding: 2px; text-align: center;"}
@@ -79,13 +81,13 @@ TableWidget t1 -volatile \
       AnchorField name -label [_ xowiki.Page-name] -orderby name -html {style "padding: 2px;"}
       AnchorField title -label [_ xowiki.Page-title] -orderby title
       Field object_type -label [_ xowiki.page_type] -orderby object_type -html {style "padding: 2px;"}
-      Field size -label "Size" -orderby size -html {align right style "padding: 2px;"}
+      Field size -label [_ xowiki.Size] -orderby size -html {align right style "padding: 2px;"}
       Field last_modified -label [_ xowiki.Page-last_modified] -orderby last_modified
-      Field mod_user -label "By User" -orderby mod_user
-      AnchorField delete -CSSclass delete-item-button -label "" ;#-html {onClick "return(confirm('Confirm delete?'));"}
+      Field mod_user -label [_ xowiki.By_user] -orderby mod_user
+      AnchorField delete -CSSclass delete-item-button -label "" ;#-html {onClick "return(confirm('#xowiki.delete_confirm#'));"}
     }
 
-foreach {att order} [split $orderby ,] break
+lassign [split $orderby ,] att order
 t1 orderby -order [expr {$order eq "asc" ? "increasing" : "decreasing"}] $att
 
 # -page_size 10
@@ -96,12 +98,12 @@ set attributes [list revision_id content_length creation_user title page_order p
                     "to_char(last_modified,'YYYY-MM-DD HH24:MI:SS') as last_modified" ]
 
 set folder_id [::$package_id folder_id]
-foreach i [db_list get_syndicated {
+foreach i [xo::dc list get_syndicated {
   select s.object_id from syndication s, cr_items ci 
   where s.object_id = ci.live_revision and ci.parent_id = :folder_id
 }] { set syndicated($i) 1 }
 
-db_foreach instance_select \
+xo::dc foreach instance_select \
     [$object_type instance_select_query \
          -folder_id $folder_id \
          -with_subtypes $with_subtypes \
@@ -114,7 +116,7 @@ db_foreach instance_select \
           set page_link [::$package_id pretty_link -parent_id $parent_id $name]
           set name [::$package_id external_name -parent_id $parent_id $name]
 
-          t1 add \
+	  ::template::t1 add \
               -name $name \
               -title $title \
               -object_type [string map [list "::xowiki::" ""] $object_type] \
@@ -129,8 +131,9 @@ db_foreach instance_select \
               -delete "" \
               -delete.href [export_vars -base  [$package_id package_url] {{delete 1} item_id name return_url}] \
               -delete.title #xowiki.delete# 
+
           if {$::individual_permissions} {
-            [t1 last_child] set permissions.href \
+            [::template::t1 last_child] set permissions.href \
                 [export_vars -base permissions {item_id return_url}] 
           }
           if {$::with_publish_status} {
@@ -142,14 +145,20 @@ db_foreach instance_select \
 	      set image inactive.png
 	      set state "ready"
 	    }
-            [t1 last_child] set publish_status.src /resources/xowiki/$image
-	    [t1 last_child] set publish_status.href \
+            [::template::t1 last_child] set publish_status.src /resources/xowiki/$image
+	    [::template::t1 last_child] set publish_status.href \
 		[export_vars -base [$package_id package_url]admin/set-publish-state \
 		     {state revision_id return_url}]
           }
-	  [t1 last_child] set page_order $page_order
+	  [::template::t1 last_child] set page_order $page_order
         }
 
 set t1 [t1 asHTML]
 # db_foreach clobbers title, so re-establish it
 set title $page_title
+
+# Local variables:
+#    mode: tcl
+#    tcl-indent-level: 2
+#    indent-tabs-mode: nil
+# End:
