@@ -51,6 +51,9 @@ set object_id 0
 set object_type ""
 set object_type_pretty ""
 set object_owner_ids {0}
+
+set read_p 0
+
 if {"" != $conf_item_id} {
     set object_id $conf_item_id
     set object_type "im_conf_item"
