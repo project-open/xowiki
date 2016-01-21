@@ -55,14 +55,14 @@ if {"" != $conf_item_id} {
     set object_id $conf_item_id
     set object_type "im_conf_item"
     set object_type_pretty [lang::message::lookup "" intranet-core.Configuration_Item "Configuration Item"]
-    lappend object_owner_ids [db_string object_owners "select conf_item_owner_id from im_conf_items where conf_item_id = :object_id" -default 0]
+    lappend object_owner_ids [db_string object_owners "select conf_item_owner_id from im_conf_items where conf_item_owner_id is not null and conf_item_id = :object_id" -default 0]
     im_conf_item_permissions $current_user_id $conf_item_id view_p read_p write_p admin_p
 }
 if {"" != $project_id} {
     set object_id $project_id
     set object_type "im_project"
     set object_type_pretty [lang::message::lookup "" intranet-core.Project "Project"]
-    lappend object_owner_ids [db_string object_owners "select project_lead_id from im_projects where project_id = :object_id" -default 0]
+    lappend object_owner_ids [db_string object_owners "select project_lead_id from im_projects where project_lead_id is not null and project_id = :object_id" -default 0]
     im_project_permissions $current_user_id $project_id view_p read_p write_p admin_p
 }
 if {"" != $company_id} {
@@ -72,7 +72,7 @@ if {"" != $company_id} {
     im_company_permissions $current_user_id $company_id view_p read_p write_p admin_p
 }
 
-lappend object_owner_ids [db_string object_creator "select creation_user from acs_objects where object_id = :object_id" -default 0]
+lappend object_owner_ids [db_string object_creator "select creation_user from acs_objects where creation_user is not null and object_id = :object_id" -default 0]
 
 set object_owner_ul ""
 set owner_sql "
