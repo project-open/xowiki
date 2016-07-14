@@ -10,7 +10,7 @@
   <msg key="ago">vor %time%</msg>
   <msg key="All_pages">Alle Einträge</msg>
   <msg key="back">Zurück</msg>
-  <msg key="By_user">von User/in</msg>
+  <msg key="By_user">von Benutzer</msg>
   <msg key="Candidates">Auswahlmöglichkeiten</msg>
   <msg key="categories">Kategorien</msg>
   <msg key="choiceInteraction_simpleChoice">Geben Sie hier die Antworten ein.</msg>
@@ -27,7 +27,7 @@
   <msg key="delete_all">Alle löschen</msg>
   <msg key="delete_all_confirm">Wirklich alles löschen?</msg>
   <msg key="delete_all_instances">Alle %pretty_plural% dieses Wikis löschen</msg>
-  <msg key="delete_all_items">Alle Einträge dieser Art löschen</msg>
+  <msg key="delete_all_items">Alle Einträge dieser Instanz löschen</msg>
   <msg key="delete_confirm">Löschen bestätigen?</msg>
   <msg key="delete_title">Lösche diese Seite ...</msg>
   <msg key="details">Details</msg>
@@ -37,8 +37,8 @@
   <msg key="edit_title">Diese Seite bearbeiten ...</msg>
   <msg key="entries_using_form">Einträge für das Formular %form%:</msg>
   <msg key="error-delete_entries_first">Dieses Formular wird noch von %count% Einträgen verwendet. Bitte löschen Sie diese, bevor Sie das Formular löschen.</msg>
-  <msg key="error-includelet-unknown">Fehler: Includelet '%page_name%' nicht bekannt</msg>
-  <msg key="error_in_includelet">Fehler in Includelet '{{%arg%}}' auf Seite %name%:</msg>
+  <msg key="error-includelet-unknown">Fehler: Includelet &#39;%page_name%&#39; nicht bekannt</msg>
+  <msg key="error_in_includelet">Fehler in Includelet &#39;{{%arg%}}&#39; auf Seite %name%:</msg>
   <msg key="event">Termin</msg>
   <msg key="event-end_of_event">Endzeit</msg>
   <msg key="event-end_of_lecture">Vortragsende</msg>
@@ -83,7 +83,7 @@
   <msg key="hour">Stunde</msg>
   <msg key="hours">Stunden</msg>
   <msg key="import">Importieren</msg>
-  <msg key="import_create_user_ids">User-IDs erstellen</msg>
+  <msg key="import_create_user_ids">Benutzer-IDs erstellen</msg>
   <msg key="import_create_user_ids_helptxt">Falls dieses Kästchen aktiviert ist, werden beim Import gegebenenfalls neue User-IDs erstellt.</msg>
   <msg key="import_replace">Objekte ersetzen</msg>
   <msg key="import_replace_helptxt">Falls dieses Kästchen aktiviert ist, werden beim Import bereits bestehende Objekte ersetzt. Bei Nicht-Aktivieren wird beim Import eine neue Version des Objekts hinzugefügt.</msg>
@@ -143,7 +143,7 @@
   <msg key="Page-publish_date">Veröffentlichungsdatum</msg>
   <msg key="Page-text">Inhalt</msg>
   <msg key="Page-title">Titel der Seite</msg>
-  <msg key="Page-validate_name">Another item with the name '%value%' exists already in this folder</msg>
+  <msg key="Page-validate_name">Another item with the name &#39;%value%&#39; exists already in this folder</msg>
   <msg key="page_kind">Art</msg>
   <msg key="page_type">Typ der Seite</msg>
   <msg key="PageInstance-instance_attributes">Instanzattribute</msg>
@@ -157,7 +157,7 @@
   <msg key="popular_tags_label">Häufig verwendete Schlagworte</msg>
   <msg key="popular_tags_link">häufige Schlagworte</msg>
   <msg key="portlet_title_exists_error_long">Ändern Sie entweder den Namen des existierenden Portlets oder den Titel der Xowiki-Seite, die Sie zum Portal hinzufügen wollen.</msg>
-  <msg key="portlet_title_exists_error_short">Es gibt bereits ein Portlet mit dem Titel '%page_title%' in diesem Portal.</msg>
+  <msg key="portlet_title_exists_error_short">Es gibt bereits ein Portlet mit dem Titel &#39;%page_title%&#39; in diesem Portal.</msg>
   <msg key="prompt">Prompt</msg>
   <msg key="publish_status">Freigegeben</msg>
   <msg key="recently_changed_pages">Zuletzt geänderte Seiten</msg>
@@ -167,7 +167,7 @@
   <msg key="replaced">ersetzt</msg>
   <msg key="revisions">Verlauf</msg>
   <msg key="revisions_title">Änderungsgeschichte dieser Seite ...</msg>
-  <msg key="rss_client">RSS-Klient</msg>
+  <msg key="rss_client">RSS-Client</msg>
   <msg key="scoring">Bewertungsschema</msg>
   <msg key="search">Suche</msg>
   <msg key="search_title">Suche in diesem Wiki...</msg>
