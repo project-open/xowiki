@@ -15,7 +15,7 @@
 <p>
 <p>This is the beginning of the main or left column.</p>
 {{adp portlets/portlet {portlet "Project Base Data"}}} <br />
-{{adp portlets/portlet {portlet "Project Timesheet Tasks"}}} <br />
+{{adp portlets/portlet {portlet "Project Gantt Tasks"}}} <br />
 {{adp portlets/portlet {portlet "Project Survey Component"}}} <br />
 {{adp portlets/portlet {portlet "Project Notes"}}} <br />
 {{adp portlets/portlet {portlet "Project Risks"}}} <br />
