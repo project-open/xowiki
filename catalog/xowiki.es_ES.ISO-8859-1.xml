@@ -38,7 +38,7 @@
   <msg key="popular_tags_label">Tags populares</msg>
   <msg key="popular_tags_link">tags populares</msg>
   <msg key="portlet_title_exists_error_long">Por favor, cambie el nombre de los portlets existentes ó el título de la página del xowiki que se quiere añadir al portal.</msg>
-  <msg key="portlet_title_exists_error_short">Un portlet cuyo título es '%page_title%' ya existe en este portal.</msg>
+  <msg key="portlet_title_exists_error_short">Un portlet cuyo título es &#39;%page_title%&#39; ya existe en este portal.</msg>
   <msg key="publish_status">Publicado</msg>
   <msg key="references_label">Referencias a esta Página:</msg>
   <msg key="revisions">Revisiones</msg>
