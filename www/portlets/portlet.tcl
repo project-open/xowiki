@@ -106,13 +106,12 @@ db_foreach owners $owner_sql {
     append object_owner_ul "<li><a href=\"mailto:$user_email\">$user_name (mailto:$user_email)</a></li>\n"
 }
 
-if {!$read_p} {
+if { !$read_p && !$user_admin_p } {
     set permission_msg [lang::message::lookup "" intranet-wiki.You_are_not_a_member "You are not a member of this %object_type_pretty%"]
     set contact_msg [lang::message::lookup "" intranet-wiki.Please_contact_owner "Please contact one the object owners in order to obtain permissions:"]
     ad_return_complaint 1 "<b>$permission_msg</b>:<br>$contact_msg<br>&nbsp;<ul>$object_owner_ul</ul><br>"
     ad_script_abort
 }
-
 
 # Use the latest created object as defaults
 if {"" == $project_id} { set project_id  [db_string pid "select max(project_id) from im_projects where parent_id is null" -default ""] }
