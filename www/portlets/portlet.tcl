@@ -37,7 +37,6 @@ set user_admin_p [im_is_user_site_wide_or_intranet_admin $current_user_id]
 set current_url [im_url_with_query]
 set any_perms_set_p [im_component_any_perms_set_p]
 
-
 # -------------------------------------------------------------
 # Object, Object Type and Object Security
 # -------------------------------------------------------------
@@ -148,7 +147,10 @@ if {"" == $plugin_id} {
     set portlet_not_found_msg [lang::message::lookup "" intranet-core.Portlet_not_Found "Portlet Not Found"]
     set portlet_not_found_blurb [lang::message::lookup "" intranet-core.Portlet_not_Specified_msg "Either you did not specify 'plugin_id' or we did not find 'plugin_name' or 'package_key'."]
     set result "<b>$portlet_not_found_msg</b>:\n$portlet_not_found_blurb<br>"
-    append result "<pre>plugin_id=$plugin_id<br>plugin_name=$plugin_name<br>package_key=$package_key<br>parameter_list=$parameter_list</pre>"
+    set edit_link "${current_url}?m=edit"
+    set edit_txt [lang::message::lookup "" xowiki.Portlet_Not_Found_Edit_Link "You can <a href='$edit_link'>edit the Wiki page</a> and eventually remove the missing portlet."]
+    append result "<pre>plugin_id=$plugin_id<br>plugin_name=$plugin_name<br>package_key=$package_key<br>parameter_list=$parameter_list</pre>"  
+    append result "<br/>$edit_txt"
     doc_return 200 "text/html" $result
     ad_script_abort
 }
