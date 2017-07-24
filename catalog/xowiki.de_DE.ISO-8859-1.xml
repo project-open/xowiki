@@ -10,6 +10,7 @@
   <msg key="ago">vor %time%</msg>
   <msg key="All_pages">Alle Einträge</msg>
   <msg key="back">Zurück</msg>
+  <msg key="By_user">von Benutzer</msg>
   <msg key="Candidates">Auswahlmöglichkeiten</msg>
   <msg key="categories">Kategorien</msg>
   <msg key="choiceInteraction_simpleChoice">Geben Sie hier die Antworten ein.</msg>
@@ -26,6 +27,7 @@
   <msg key="delete_all">Alle löschen</msg>
   <msg key="delete_all_confirm">Wirklich alles löschen?</msg>
   <msg key="delete_all_instances">Alle %pretty_plural% dieses Wikis löschen</msg>
+  <msg key="delete_all_items">Alle Einträge dieser Instanz löschen</msg>
   <msg key="delete_confirm">Löschen bestätigen?</msg>
   <msg key="delete_title">Lösche diese Seite ...</msg>
   <msg key="details">Details</msg>
@@ -81,6 +83,7 @@
   <msg key="hour">Stunde</msg>
   <msg key="hours">Stunden</msg>
   <msg key="import">Importieren</msg>
+  <msg key="import_create_user_ids">Benutzer-IDs erstellen</msg>
   <msg key="import_create_user_ids_helptxt">Falls dieses Kästchen aktiviert ist, werden beim Import gegebenenfalls neue User-IDs erstellt.</msg>
   <msg key="import_replace">Objekte ersetzen</msg>
   <msg key="import_replace_helptxt">Falls dieses Kästchen aktiviert ist, werden beim Import bereits bestehende Objekte ersetzt. Bei Nicht-Aktivieren wird beim Import eine neue Version des Objekts hinzugefügt.</msg>
