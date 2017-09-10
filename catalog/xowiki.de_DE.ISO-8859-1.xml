@@ -33,7 +33,7 @@
   <msg key="details">Details</msg>
   <msg key="edit">Bearbeiten</msg>
   <msg key="Edit_category">Kategorienbaum bearbeiten</msg>
-  <msg key="edit_link">bearbeiten</msg>
+  <msg key="edit_link">Bearbeiten</msg>
   <msg key="edit_title">Diese Seite bearbeiten ...</msg>
   <msg key="entries_using_form">Einträge für das Formular %form%:</msg>
   <msg key="error-delete_entries_first">Dieses Formular wird noch von %count% Einträgen verwendet. Bitte löschen Sie diese, bevor Sie das Formular löschen.</msg>
@@ -160,7 +160,7 @@
   <msg key="PodcastItem-subtitle">Untertitel</msg>
   <msg key="PodcastItem_pretty_name">Podcast Item</msg>
   <msg key="popular_tags_label">Häufig verwendete Schlagworte</msg>
-  <msg key="popular_tags_link">häufige Schlagworte</msg>
+  <msg key="popular_tags_link">Häufige Schlagworte</msg>
   <msg key="portlet_title_exists_error_long">Ändern Sie entweder den Namen des existierenden Portlets oder den Titel der Xowiki-Seite, die Sie zum Portal hinzufügen wollen.</msg>
   <msg key="portlet_title_exists_error_short">Es gibt bereits ein Portlet mit dem Titel &#39;%page_title%&#39; in diesem Portal.</msg>
   <msg key="prompt">Prompt</msg>
