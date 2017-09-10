@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<message_catalog package_key="xowiki" locale="pl_PL" charset="utf-8">
+
+  <msg key="admin">Zarządzaj</msg>
+  <msg key="admin_title">Zarządzaj tym pakietem ...</msg>
+  <msg key="delete">Usuń</msg>
+  <msg key="delete_title">Skasuj tę stronę ...</msg>
+  <msg key="edit">Edytuj</msg>
+  <msg key="edit_link">Edytuj tagi</msg>
+  <msg key="edit_title">Edytuj tę stronę...</msg>
+  <msg key="File_pretty_name">Plik Wiki</msg>
+  <msg key="Form_pretty_name">Formularz Wiki</msg>
+  <msg key="FormPage_pretty_name">Wiki FormPage</msg>
+  <msg key="includelet-visitors">Odwiedzający</msg>
+  <msg key="includelets-visits">Odwiedzin</msg>
+  <msg key="index">Indeks</msg>
+  <msg key="index_title">Idź na stronę startową tego pakietu...</msg>
+  <msg key="new_page">Nowa strona</msg>
+  <msg key="new_title">Utwórz nową stronę ...</msg>
+  <msg key="notifications">Powiadomienia</msg>
+  <msg key="notifications_title">Zarządzaj powiadomieniami ...</msg>
+  <msg key="Object_pretty_name">Obiekt Wiki</msg>
+  <msg key="Page-last_modified">Ostatnie zmodyfikowane</msg>
+  <msg key="Page_pretty_name">Strona XoWiki</msg>
+  <msg key="PageInstance_pretty_name">Instancja strony wiki</msg>
+  <msg key="PageTemplate_pretty_name">Wzorzec strony wiki</msg>
+  <msg key="PlainPage_pretty_name">Prosta strona wiki</msg>
+  <msg key="PodcastItem_pretty_name">Podcast</msg>
+  <msg key="popular_tags_link">Popularne tagi</msg>
+  <msg key="recently_changed_pages">Ostatnio zmienione strony</msg>
+  <msg key="revisions_title">Pokaż wersje tej strony ...</msg>
+  <msg key="search">Szukaj</msg>
+  <msg key="search_title">Przeszukaj strony tego pakietu ...</msg>
+  <msg key="your_tags_label">Twoje tagi</msg>
+</message_catalog>
