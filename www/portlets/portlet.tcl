@@ -145,62 +145,67 @@ if {"" == $plugin_id} {
 if {"" == $plugin_id} {
     set portlet_not_found_msg [lang::message::lookup "" intranet-core.Portlet_not_Found "Portlet Not Found"]
     set portlet_not_found_blurb [lang::message::lookup "" intranet-core.Portlet_not_Specified_msg "Either you did not specify 'plugin_id' or we did not find 'plugin_name' or 'package_key'."]
-    set result "<b>$portlet_not_found_msg</b>:\n$portlet_not_found_blurb<br>"
+    set result "<font color=red>\n"
+    append result "<b>$portlet_not_found_msg</b>:\n$portlet_not_found_blurb<br>"
     set edit_link "${current_url}?m=edit"
     set edit_txt [lang::message::lookup "" xowiki.Portlet_Not_Found_Edit_Link "You can <a href='$edit_link'>edit the Wiki page</a> and eventually remove the missing portlet."]
     append result "<pre>plugin_id=$plugin_id<br>plugin_name=$plugin_name<br>package_key=$package_key<br>parameter_list=$parameter_list</pre>"  
     append result "<br/>$edit_txt"
-    doc_return 200 "text/html" $result
-    ad_script_abort
-}
+    append result "</font>"
+    ad_return_template
+    # doc_return 200 "text/html" $result
+    # ad_script_abort
+} else { 
 
 
-# -------------------------------------------------------------
-# Portlet Security
-# -------------------------------------------------------------
-
-# Get everything about the portlet
-if {![db_0or1row plugin_info "
+    # -------------------------------------------------------------
+    # Portlet Security
+    # -------------------------------------------------------------
+    
+    # Get everything about the portlet
+    if {![db_0or1row plugin_info "
 	select	cp.*,
 		im_object_permission_p(cp.plugin_id, :current_user_id, 'read') as perm
 	from	im_component_plugins cp
 	where	cp.plugin_id = :plugin_id
-"]} {
-    ad_return_complaint 1 "Didn't find plugin #$plugin_id"
-    ad_script_abort
-}
-
-# ad_return_complaint 1 "$current_user_id - $any_perms_set_p - $perm - $plugin_name"
-
-if {$any_perms_set_p > 0 && "f" == $perm} {
-    set result ""
-    ad_return_template
-}
-
-# -------------------------------------------------------------
-# Determine the list of variables in the component_tcl and
-# make sure they are specified in the HTTP session
-# -------------------------------------------------------------
-
-set form_vars [ns_conn form]
-array set form_hash [ns_set array $form_vars]
-
-foreach elem $component_tcl {
-    if {[regexp {^\$(.*)} $elem match varname]} {
-	if {![info exists $varname]} {
-	    if {![info exists form_hash($varname)]} { 
-		doc_return 200 "text/html" "<pre>Error: You have to specify variable '$varname' in the URL."
-		ad_script_abort
+        "]} {
+	ad_return_complaint 1 "Didn't find plugin #$plugin_id"
+	ad_script_abort
+    }
+    
+    # ad_return_complaint 1 "$current_user_id - $any_perms_set_p - $perm - $plugin_name"
+    
+    if {$any_perms_set_p > 0 && "f" == $perm} {
+	set result ""
+	ad_return_template
+    }
+    
+    # -------------------------------------------------------------
+    # Determine the list of variables in the component_tcl and
+    # make sure they are specified in the HTTP session
+    # -------------------------------------------------------------
+    
+    set form_vars [ns_conn form]
+    array set form_hash [ns_set array $form_vars]
+    
+    foreach elem $component_tcl {
+	if {[regexp {^\$(.*)} $elem match varname]} {
+	    if {![info exists $varname]} {
+		if {![info exists form_hash($varname)]} { 
+		    doc_return 200 "text/html" "<pre>Error: You have to specify variable '$varname' in the URL."
+		    ad_script_abort
+		}
+		set $varname $form_hash($varname)
 	    }
-	    set $varname $form_hash($varname)
 	}
     }
-}
+    
+    
+    set result ""
+    if {[catch {
+	set result [eval $component_tcl]
+    } err_msg]} {
+	set result "Error evaluating portlet:<pre>$err_msg</pre>"
+    }
 
-
-set result ""
-if {[catch {
-    set result [eval $component_tcl]
-} err_msg]} {
-    set result "Error evaluating portlet:<pre>$err_msg</pre>"
 }
