@@ -1,23 +1,28 @@
 ::xowiki::Page new -title "project-template" -text {
 <p>This is some text at the very top of the page.</p>
-
+<p>
+{{adp portlets/portlet {portlet "Gantt Editor"}}} <br />
+{{adp portlets/portlet {portlet "Projects in Program"}}} <br />
+{{adp portlets/portlet {portlet "Task Board"}}} <br />
+</p>
+ 
 >>right-col<<
+
 <p>This is the beginning of the right column.</p>
 <p>
+{{adp portlets/portlet {portlet "Project Baselines"}}} <br />
 {{adp portlets/portlet {portlet "Project Members"}}} <br />
-{{adp portlets/portlet {portlet "Project Forum Component"}}} <br />  
-{{adp portlets/portlet {portlet "Gantt Schedule"}}} <br />
-{{adp portlets/portlet {portlet "Gantt Resources"}}} <br />
+{{adp portlets/portlet {portlet "Project Forum Component"}}} <br />
 </p>
 <p>This is the end of the right column.</p>
+
 >><<
 
-<p>
 <p>This is the beginning of the main or left column.</p>
+<p>
 {{adp portlets/portlet {portlet "Project Base Data"}}} <br />
-{{adp portlets/portlet {portlet "Project Gantt Tasks"}}} <br />
 {{adp portlets/portlet {portlet "Project Survey Component"}}} <br />
-{{adp portlets/portlet {portlet "Project Notes"}}} <br />
+{{adp portlets/portlet {portlet "Earned Value"}}} <br />
 {{adp portlets/portlet {portlet "Project Risks"}}} <br />
 </p>
 <p>This is the end of the main or left column.</p>
