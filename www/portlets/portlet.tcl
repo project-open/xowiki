@@ -31,7 +31,7 @@ if {![info exists return_url]} { set return_url [im_url_with_query] }
 set url [ns_conn url]
 set url_pieces [split $url "/"]
 set last_url_piece [lindex $url_pieces end]
-set user_id [ad_get_user_id]
+set user_id [auth::require_login]
 set current_user_id $user_id
 set user_admin_p [im_is_user_site_wide_or_intranet_admin $current_user_id]
 set current_url [im_url_with_query]
