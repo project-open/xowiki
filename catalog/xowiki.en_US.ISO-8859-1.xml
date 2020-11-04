@@ -45,21 +45,21 @@
   <msg key="entries_using_form">Entries for form %form%</msg>
   <msg key="error-delete_entries_first">This page is still used by %count% entries. Please delete these first before deleting this page.</msg>
   <msg key="error-form_constraint-invalid_characters">Form constraint contains invalid characters</msg>
-  <msg key="error-form_constraint-unknown_attribute">From field &#39;%name%&#39; (class %class%) has unknown attribute &#39;%entry%&#39;</msg>
+  <msg key="error-form_constraint-unknown_attribute">From field '%name%' (class %class%) has unknown attribute '%entry%'</msg>
   <msg key="error-form_constraint-unknown_editor">Unknown editor %editor%. Possible values are: %editors%</msg>
-  <msg key="error-form_constraint-unknown_spec_entry">From field &#39;%name%&#39; has unknown specification &#39;%entry%&#39;</msg>
+  <msg key="error-form_constraint-unknown_spec_entry">From field '%name%' has unknown specification '%entry%'</msg>
   <msg key="error-includelet-adp_syntax_invalid">Syntax: adp &amp;lt;name of adp-file&amp;gt; {&amp;lt;argument list&amp;gt;}&lt;br/&gt;
 
-Invalid argument list: &#39;%adp%&#39;; must be of form: attribute value pairs (even number of elements)</msg>
+Invalid argument list: '%adp%'; must be of form: attribute value pairs (even number of elements)</msg>
   <msg key="error-includelet-dash_syntax_invalid">&lt;pre&gt;%errMsg%&lt;/pre&gt;
 
 Argument list must contain attribute value pairs (attributes with dashes)</msg>
   <msg key="error-includelet-error_during_adp_evaluation">evaluation of adp file returned error message: %errorMsg%</msg>
-  <msg key="error-includelet-error_during_render">Error in includelet &#39;%page_name%&#39;:
+  <msg key="error-includelet-error_during_render">Error in includelet '%page_name%':
 &lt;pre&gt;%::errorInfo%&lt;/pre&gt;</msg>
-  <msg key="error-includelet-nesting_to_deep">Nesting of includelets is to deep</msg>
-  <msg key="error-includelet-unknown">Error: includelet &#39;%page_name%&#39; unknown</msg>
-  <msg key="error_in_includelet">Error in includelet &#39;{{%arg%}}&#39; of page %name%:</msg>
+  <msg key="error-includelet-nesting_to_deep">Nesting of includelets is too deep</msg>
+  <msg key="error-includelet-unknown">Error: includelet '%page_name%' unknown</msg>
+  <msg key="error_in_includelet">Error in includelet '{{%arg%}}' of page %name%:</msg>
   <msg key="event">Event</msg>
   <msg key="event-end_of_event">End Time</msg>
   <msg key="event-end_of_lecture">End of Lecture</msg>
@@ -106,6 +106,7 @@ Argument list must contain attribute value pairs (attributes with dashes)</msg>
   <msg key="FormPage_parameters_title">Wiki parameters</msg>
   <msg key="FormPage_pretty_name">Wiki FormPage</msg>
   <msg key="FormPage_pretty_plural">Wiki FormPages</msg>
+  <msg key="future_interval">in %time%</msg>
   <msg key="has_modified_this_page">has modified this page while you were editing it</msg>
   <msg key="height">Height</msg>
   <msg key="hour">hour</msg>
@@ -138,9 +139,24 @@ Argument list must contain attribute value pairs (attributes with dashes)</msg>
   <msg key="menu-Clipboard-Copy">Copy</msg>
   <msg key="menu-Clipboard-Use-Copy">Copy</msg>
   <msg key="menu-Clipboard-Use-Export">Export</msg>
+  <msg key="menu-New">New</msg>
+  <msg key="menu-New-File">File</msg>
+  <msg key="menu-New-Folder">Folder</msg>
+  <msg key="menu-New-Form">New Form</msg>
+  <msg key="menu-New-Page">Page</msg>
+  <msg key="menu-New-SymLink">Symbolic Link</msg>
+  <msg key="menu-Package-Admin">Admin</msg>
   <msg key="menu-Package-ImportArchive">Import Archive</msg>
   <msg key="menu-Package-ImportDump">Import Dump</msg>
-  <msg key="menu-Page">Page</msg>
+  <msg key="menu-Package-Notifications">Notifications</msg>
+  <msg key="menu-Package-Startpage">Startpage</msg>
+  <msg key="menu-Package-Subscribe">Subscribe</msg>
+  <msg key="menu-Package-Toc">Table of Contents</msg>
+  <msg key="menu-Page">This Page</msg>
+  <msg key="menu-Page-Delete">Delete Page</msg>
+  <msg key="menu-Page-Edit">Edit Page</msg>
+  <msg key="menu-Page-Revisions">Revisions</msg>
+  <msg key="menu-Page-Show">Show Page</msg>
   <msg key="minute">minute</msg>
   <msg key="minutes">minutes</msg>
   <msg key="modified_page">modified page</msg>
@@ -177,7 +193,7 @@ Argument list must contain attribute value pairs (attributes with dashes)</msg>
   <msg key="Page-text">Content</msg>
   <msg key="Page-title">Page Title</msg>
   <msg key="Page-validate_form_constraints">%errorMsg%</msg>
-  <msg key="Page-validate_name">Another item with the name &#39;%value%&#39; exists already in this folder</msg>
+  <msg key="Page-validate_name">Another item with the name '%value%' exists already in this folder</msg>
   <msg key="Page-validate_page_order">Page Order invalid; might only contain upper and lower case letters, underscore, digits and dots</msg>
   <msg key="page_kind">Type</msg>
   <msg key="Page_pretty_name">XoWiki Page</msg>
@@ -208,10 +224,10 @@ Argument list must contain attribute value pairs (attributes with dashes)</msg>
   <msg key="PodcastItem_pretty_plural">Podcast Items</msg>
   <msg key="popular_tags_label">Popular tags</msg>
   <msg key="popular_tags_link">popular tags</msg>
-  <msg key="portlet_name_does_not_exist_error_long">There is no page with name &#34;%page_name%&#34; available.</msg>
+  <msg key="portlet_name_does_not_exist_error_long">There is no page with name &quot;%page_name%&quot; available.</msg>
   <msg key="portlet_page_does_not_exist_error_short">The given page does not exist</msg>
-  <msg key="portlet_title_exists_error_long">Please either change the existing portlets&#39; name or the title of the xowiki page you want to add to the portal.</msg>
-  <msg key="portlet_title_exists_error_short">A portlet with the title &#39;%page_title%&#39; already exists in this portal.</msg>
+  <msg key="portlet_title_exists_error_long">Please either change the existing portlets' name or the title of the xowiki page you want to add to the portal.</msg>
+  <msg key="portlet_title_exists_error_short">A portlet with the title '%page_title%' already exists in this portal.</msg>
   <msg key="pretty_name">Wiki</msg>
   <msg key="processing_objects">Processing objects:</msg>
   <msg key="prompt">Prompt</msg>
@@ -228,12 +244,12 @@ Argument list must contain attribute value pairs (attributes with dashes)</msg>
   <msg key="richtext-validate_safe_html">%errorMsg%</msg>
   <msg key="rss_client">RSS Client</msg>
   <msg key="scoring">Scoring</msg>
-  <msg key="scoring_help_text">Algorithmus für das Bewertungsschema.</msg>
+  <msg key="scoring_help_text">Algorithm for Evaluation Schema</msg>
   <msg key="search">Search</msg>
   <msg key="search_title">Search pages of this package ...</msg>
   <msg key="second">second</msg>
   <msg key="seconds">seconds</msg>
-  <msg key="select_link_target">To create a click, click on a page name </msg>
+  <msg key="select_link_target">To create a link, click on a page name </msg>
   <msg key="Selection">Selection</msg>
   <msg key="shuffle">Shuffle Answers</msg>
   <msg key="shuffle_help_text">Should the order of choices be presented in randomized order?</msg>

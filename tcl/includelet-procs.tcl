@@ -38,7 +38,8 @@ namespace eval ::xowiki::includelet {
     if {$ajaxhelper} {
       ::xo::Page requireCSS "/resources/ajaxhelper/yui/$path"
     } else {
-      ::xo::Page requireCSS "http://yui.yahooapis.com/$version/build/$path"
+      ::xo::Page requireCSS "//yui.yahooapis.com/$version/build/$path"
+      security::csp::require style-src yui.yahooapis.com
     }
   }
 
@@ -46,7 +47,8 @@ namespace eval ::xowiki::includelet {
     if {$ajaxhelper} {
       ::xo::Page requireJS "/resources/ajaxhelper/yui/$path"
     } else {
-      ::xo::Page requireJS "http://yui.yahooapis.com/$version/build/$path"
+      ::xo::Page requireJS "//yui.yahooapis.com/$version/build/$path"
+      security::csp::require script-src yui.yahooapis.com
     }
   }    
   
@@ -194,21 +196,20 @@ namespace eval ::xowiki::includelet {
       set and_names [list]
       foreach cid_and [split $cid_or ,] {
         if {![string is integer -strict $cid_and]} {
-          return -code error "invalid category id '$cid_and'"
-          ns_log warning "ignore invalid category id '$cid_and'"
-          continue
+          ad_return_complaint 1 "invalid category id '[ns_quotehtml $cid_and]'"
+          ad_script_abort
         }
         lappend and_names [::category::get_name $cid_and]
         lappend ands "exists (select 1 from category_object_map \
            where object_id = $item_ref and category_id = $cid_and)"
       }
-      lappend or_names "[join $and_names { and }]"
+      lappend or_names [join $and_names { and }]
       lappend ors "([join $ands { and }])"
     }
     if {$ors eq "()"} {
       set cnames ""
     } else {
-      set cnames "[join $or_names { or }]"
+      set cnames [join $or_names { or }]
       set extra_where_clause "and ([join $ors { or }])"
     }
     #my log "--cnames $category_spec -> $cnames // <$extra_where_clause>"
@@ -441,7 +442,7 @@ namespace eval ::xowiki::includelet {
     set html [next]
     set localized_title [::xo::localize $title]
     set link [expr {[string match "*:*" $name] ? 
-                    "<a href='[ns_quotehtml [$package_id pretty_link $name]]'>[ns_quotehtml $localized_title]</a>" : 
+                    "<a href='[ns_quotehtml [$package_id pretty_link -parent_id [$package_id folder_id] $name]]'>[ns_quotehtml $localized_title]</a>" : 
                     $localized_title}]
     ::xo::render_localizer
     return [subst [[self class] set template]]
@@ -461,7 +462,7 @@ namespace eval ::xowiki::includelet {
     set localized_title [::xo::localize $title]
     set edit_button [my include [list edit-item-button -book_mode true]]
     set link [expr {[string match "*:*" $name] ? 
-                    "<a href='[ns_quotehtml [$package_id pretty_link $name]]'>[ns_quotehtml $localized_title]</a>" : 
+                    "<a href='[ns_quotehtml [$package_id pretty_link -parent_id [$package_id folder_id] $name]]'>[ns_quotehtml $localized_title]</a>" : 
                     $localized_title}]
     return [subst [[self class] set template]]
   } -set template {<div class='$class'><div class='portlet-wrapper'><div class='portlet-header'>
@@ -573,17 +574,21 @@ namespace eval ::xowiki::includelet {
     set parent_id [[my set __including_page] parent_id]
     set url [$package_id pretty_link -absolute 1 -siteurl $siteurl -parent_id $parent_id news-item]
     if {$label eq ""} {set label "Add to [$package_id instance_name]"}
-    set href [subst -nocommands -nobackslash {
-      javascript:d=document;w=window;t='';
-      if(d.selection){t=d.selection.createRange().text} else 
-      if(d.getSelection){t=d.getSelection()} else 
-      if(w.getSelection){t=w.getSelection()} 
-      void(open('$url?m=create-new&title='+escape(d.title)+
-                '&detail_link='+escape(d.location.href)+'&text='+escape(t),'_blank',
-                'scrollbars=yes,width=700,height=575,status=yes,resizable=yes,scrollbars=yes'))
-    }]
-    regsub -all {[\n ]+} $href " " href
-    return "<a href='[ns_quotehtml $href]' title='[ns_quotehtml $label]' class='rss'>[ns_quotehtml $label]</a>"
+    if {![my exists id]} {my set id [::xowiki::Includelet html_id [self]]}
+
+    template::add_event_listener \
+        -id [my id] \
+        -script [subst {
+          d=document;w=window;t='';
+          if(d.selection){t=d.selection.createRange().text;}
+          else if(d.getSelection){t=d.getSelection();}
+          else if(w.getSelection){t=w.getSelection();}
+          void(open('$url?m=create-new&title='+escape(d.title)+
+                    '&detail_link='+escape(d.location.href)+'&text='+escape(t),'_blank',
+                    'scrollbars=yes,width=700,height=575,status=yes,resizable=yes,scrollbars=yes'));
+        }]
+    
+    return "<a id='[my id]' href='#' title='[ns_quotehtml $label]' class='rss'>[ns_quotehtml $label]</a>"
   }
 
   #############################################################################
@@ -779,6 +784,7 @@ namespace eval ::xowiki::includelet {
               where c.object_id in ([join $items ,])
               and c.object_id = ci.item_id and 
               and r.revision_id = ci.live_revision 
+              and ci.publish_status <> 'production'
            "
         }
       } else {
@@ -801,7 +807,12 @@ namespace eval ::xowiki::includelet {
       if {$category_ids ne ""} {
         foreach cid [split $category_ids ,] {
           set or_ids [split $cid |]
-          foreach or_id $or_ids { if {![string is integer $or_id]} {error "invalid category_ids"}}
+          foreach or_id $or_ids {
+            if {![string is integer $or_id]} {
+              ad_return_complaint 1 "invalid category_id"
+              ad_script_abort
+            }
+          }
           append sql " and exists (select * from category_object_map \
          where object_id = ci.item_id and category_id in ([join $or_ids ,]))"
         }
@@ -1398,8 +1409,8 @@ namespace eval ::xowiki::includelet {
     set save_tag_link [$package_id make_link -link $p_link $__including_page \
                            save-tags return_url]
     set popular_tags_link [$package_id make_link -link $p_link $__including_page \
-                               popular-tags return_url weblog_page]
-
+                               popular-tags]
+    
     set tags [lsort [::xowiki::Page get_tags -user_id [::xo::cc user_id] \
                          -item_id [$__including_page item_id] -package_id $package_id]]
     set entries [list]
@@ -1410,16 +1421,27 @@ namespace eval ::xowiki::includelet {
     }
     set tags_with_links [join [lsort $entries] {, }]
 
-    if {![my exists id]} {my set id [::xowiki::Includelet html_id [self]]}
-    set content [subst -nobackslashes {
+    if {![my exists id]} {
+      my set id [::xowiki::Includelet html_id [self]]
+    }
+    set content [subst {
       #xowiki.your_tags_label#: $tags_with_links
-      (<a href='#' onclick='document.getElementById("[my id]-edit_tags").style.display="block";return false;'>#xowiki.edit_link#</a>,
-       <a href='#' onclick='get_popular_tags("[ns_quotehtml $popular_tags_link]","[my id]");return false;'>#xowiki.popular_tags_link#</a>)
+      (<a id='[my id]-edit-tags-control' href='.'>#xowiki.edit_link#</a>,
+       <a id='[my id]-popular-tags-control' href='.'>#xowiki.popular_tags_link#</a>)
       <form id='[my id]-edit_tags' style='display: none' action="[ns_quotehtml $save_tag_link]" method='POST'>
-      <div><INPUT name='new_tags' type='text' value="[ns_quotehtml $tags]"></div>
+      <div><input name='new_tags' type='text' value="[ns_quotehtml $tags]"></div>
       </form>
       <span id='[my id]-popular_tags' style='display: none'></span><br >
     }]
+
+    template::add_event_listener \
+        -id [my id]-edit-tags-control \
+        -script [subst {document.getElementById("[my id]-edit_tags").style.display="block";}]
+
+    template::add_event_listener \
+        -id [my id]-popular-tags-control \
+        -script [subst {get_popular_tags("[ns_quotehtml $popular_tags_link]","[my id]");}]
+
     return $content
   }
 
@@ -1488,14 +1510,16 @@ namespace eval ::xowiki::includelet {
     my instvar __including_page
     set item_id [$__including_page item_id] 
     set gc_return_url [$package_id url]
+    #
     # Even, if general_comments is turned on, don't offer the
     # link to add comments, unless the user is logged in.
     # Otherwise, this attracts spammers and search bots
+    #
     if {[::xo::cc user_id] != 0} {
       set gc_link [general_comments_create_link \
                        -object_name [$__including_page title] \
                        $item_id $gc_return_url]
-      set gc_link <p>[ns_quotehtml $gc_link]</p>
+      set gc_link <p>$gc_link</p>
     } else {
       set gc_link ""
     }
@@ -1546,7 +1570,7 @@ namespace eval ::xowiki::includelet {
 
     # the following opens a window, where a user can edit the posted info.
     # however, it seems not possible to add tags this way automatically.
-    # Alternatively, one could use the api as descibed below; this allows
+    # Alternatively, one could use the api as described below; this allows
     # tags, but no editing...
     # http://farm.tucows.com/blog/_archives/2005/3/24/462869.html#adding
 
@@ -1585,7 +1609,7 @@ namespace eval ::xowiki::includelet {
 
 
   #
-  # my-references lists the pages which are refering to the 
+  # my-references lists the pages which are referring to the 
   # including page
   #
   ::xowiki::IncludeletClass create my-references \
@@ -1601,9 +1625,11 @@ namespace eval ::xowiki::includelet {
     # The same image might be linked both, as img or file on one page, 
     # so we need DISTINCT.
 
-    xo::dc foreach get_references "SELECT DISTINCT page,ci.name,ci.parent_id,o.package_id as pid \
-        from xowiki_references,cr_items ci,acs_objects o \
-        where reference = :item_id and ci.item_id = page and ci.item_id = o.object_id" {
+    xo::dc foreach -prepare integer get_references {
+      SELECT DISTINCT page,ci.name,ci.parent_id,o.package_id as pid
+      from xowiki_references,cr_items ci,acs_objects o 
+      where reference = :item_id and ci.item_id = page and ci.item_id = o.object_id
+    } {
       if {$pid eq ""} {
         # in version less then oacs 5.2, this returns empty
         set pid [::xo::dc get_value 5.2 {select package_id from cr_folders where folder_id = :parent_id}]
@@ -1632,7 +1658,7 @@ namespace eval ::xowiki::includelet {
   }
 
   #
-  # my-refers lists the pages which are refered to by the 
+  # my-refers lists the pages which are referred to by the 
   # including page
   #
   ::xowiki::IncludeletClass create my-refers \
@@ -2228,6 +2254,7 @@ namespace eval ::xowiki::includelet {
 
   toc instproc initialize {} {
     my get_parameters
+    my array set navigation {count 0 position 0 current ""}
 
     set list_mode 0
     switch -- $style {
@@ -2403,17 +2430,21 @@ namespace eval ::xowiki::includelet {
     set as_att_value [::xowiki::Includelet html_encode $inner_html]
     set save_form [subst {
       <p>
-      <a href='#' onclick='document.getElementById("$id").style.display="inline";return false;'>Create Form from Content</a>
+      <a id='$id-control' href='#'>Create Form from Content</a>
       </p>
       <span id='$id' style='display: none'>
       Form Name: 
-      <FORM action="$base?m=create-new" method='POST' style='display: inline'>
-      <INPUT name='class' type='hidden' value="::xowiki::Form">
-      <INPUT name='content' type='hidden' value="$as_att_value">
-      <INPUT name='name' type='text'>
-      </FORM>
+      <form action="$base?m=create-new" method='POST' style='display: inline'>
+      <input name='class' type='hidden' value="::xowiki::Form">
+      <input name='content' type='hidden' value="$as_att_value">
+      <input name='name' type='text'>
+      </form>
       </span>
     }]
+
+    template::add_event_listener \
+        -id $id-control \
+        -script [subst {document.getElementById("$id").style.display="inline";}]
 
     return $inner_html$save_form
   }
@@ -2540,7 +2571,7 @@ namespace eval ::xowiki::includelet {
 
     if {$allow_reorder ne ""} {
       for {set l $last_level} {$l > 0} {incr l -1} {append output "</ul>\n" }
-      append output "<script type='text/javascript'>$js</script>\n"
+      append output "<script type='text/javascript' nonce='$::__csp_nonce'>$js</script>\n"
     }
     return $output
   }
@@ -2662,8 +2693,7 @@ namespace eval ::xowiki::includelet {
       <link rel="stylesheet" href="http://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css" type="text/css" media="screen, projection" />
       <link rel="stylesheet" href="print.css" type="text/css"
       media="print" />
-      <script src="http://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js" type="text/javascript">
-      </script>
+      <script src="http://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js" type="text/javascript"></script>
       </head>
       <body>
       $output
@@ -3144,7 +3174,7 @@ namespace eval ::xowiki::includelet {
       <canvas id="collab" width="500" height="500" style="border: 0px solid black">
       </canvas>
       [set nodesHTML]
-      <script type="text/javascript">
+      <script type="text/javascript" nonce='[set ::__csp_nonce]'>
       function draw() {
         if (typeof(G_vmlCanvasManager) == "object") {
           G_vmlCanvasManager.init_(window.document);
@@ -3367,7 +3397,7 @@ namespace eval ::xowiki::includelet {
 
     return [subst -nocommands -nobackslashes {
       <div id="my-timeline" style="font-size:70%; height: 350px; border: 1px solid #aaa"></div>
-      <script type="text/javascript">
+      <script type="text/javascript" nonce='$::__csp_nonce'>
       var tl;
       function onLoad() {
         var eventSource = new Timeline.DefaultEventSource();
@@ -3658,6 +3688,7 @@ namespace eval ::xowiki::includelet {
     ::xo::Page requireJS "/resources/xowiki/highcharts/js/themes/gray.js"
     set result "<div id='[my id]' style='width: 100%; height: 400px'></div>\n"
     set title [my title]
+    if {![my exists id]} {my set id [::xowiki::Includelet html_id [self]]}a
     set id [my id]
     set values [list]
     foreach {name value} $data {
@@ -3665,7 +3696,7 @@ namespace eval ::xowiki::includelet {
     }
     set values [join $values ",\n"]
     append result [subst -nocommands {
-      <script type='text/javascript'>
+      <script type='text/javascript' nonce='$::__csp_nonce'>
       var chart;
       chart = new Highcharts.Chart({
         chart: {
@@ -3807,23 +3838,18 @@ namespace eval ::xowiki::includelet {
     }
     #my log fc=$form_constraints
 
-    # 
-    # The internal variables (instance attributes, etc) are prefixed
-    # with an underscore. Therefore, we prefix here "orderby" as
-    # well. For the provided table properties, prefixing happens in
-    # the loop below.
-    #
-    set orderby _$orderby
-
     # load table properties; order_by won't work due to comma, but solve that later (TODO)
     set table_properties [::xowiki::PageInstance get_list_from_form_constraints \
                               -name @table_properties \
                               -form_constraints $form_constraints]
     foreach {attr value} $table_properties {
+      # All labels of the following switch statement are used
+      # as variable names. Take care when adding new labels not to
+      # overwrite existing variables.
       switch $attr {
         orderby {set $attr _[::xowiki::formfield::FormField fc_decode $value]}
         buttons - publish_status - category_id - unless -
-        where -   with_categories - with_form_link - csv - view_field - 
+        where -   with_categories - with_form_link - csv - view_field -
         voting_form - voting_form_form - voting_form_anon_instances {
           set $attr $value
           #my msg " set $attr $value"
@@ -3898,7 +3924,7 @@ namespace eval ::xowiki::includelet {
       append cols [list AnchorField  create _$fn \
                        -label [$__ff($fn) label] \
                        -richtext 1 \
-                       -orderby _$fn \
+                       -orderby $fn \
                       ] \n
     }
     if {[info exists use_button(delete)]} {
@@ -3910,7 +3936,7 @@ namespace eval ::xowiki::includelet {
     if {$renderer ne ""} {
       lappend cmd -renderer $renderer
     } else {
-      switch [parameter::get_global_value -package_key xowiki -parameter PreferredCSSToolkit -default yui] {
+      switch [parameter::get_global_value -package_key xowiki -parameter PreferredCSSToolkit -default bootstrap] {
         bootstrap {set renderer BootstrapTableRenderer}
         default   {set renderer YUIDataTableRenderer}
       }
@@ -3924,11 +3950,24 @@ namespace eval ::xowiki::includelet {
     # instance attributes can be used for sorting as well.
     #
     lassign [split $orderby ,] att order
-    if {$att eq "__page_order"} {
-      t1 mixin add ::xo::OrderedComposite::IndexCompare
+    set sortable 1
+    if {$att ni $field_names} {
+      if {[ns_conn isconnected]} {
+        set user_agent [string tolower [ns_set get [ns_conn headers] User-Agent]]
+        if {[string match "*bingbot*" $user_agent] || [string match "*turnitin*" $user_agent]} {
+          # search engines like bingbot might still have old buggy pages in their indices;
+          # don't generate errors on non existing attributes starting with "__*"
+          set sortable 0
+        }
+      }
     }
-    #my msg "order=[expr {$order eq {asc} ? {increasing} : {decreasing}}] $att"
-    t1 orderby -order [expr {$order eq "asc" ? "increasing" : "decreasing"}] $att
+    if {$sortable} {
+      if {$att eq "_page_order"} {
+        t1 mixin add ::xo::OrderedComposite::IndexCompare
+      }
+      #my msg "order=[expr {$order eq {asc} ? {increasing} : {decreasing}}] $att"
+      t1 orderby -order [expr {$order eq "asc" ? "increasing" : "decreasing"}] $att
+    }
 
     # 
     # Compute filter clauses
@@ -3983,7 +4022,7 @@ namespace eval ::xowiki::includelet {
     }
     #my log "queries done"
     if {[info exists wf]} {
-      set wf_link [$package_id pretty_link -parent_id $parent_id $wf]
+      set wf_link [$package_id pretty_link -parent_id $parent_id -path_encode false $wf]
     }
 
     foreach p [$items children] {
@@ -4416,9 +4455,14 @@ namespace eval ::xowiki::includelet {
   
   gravatar proc url {-email {-size 80}} {
     # reusable helper proc to compute an gravatar URL
-    package require md5
-    set md5 [string tolower [md5::Hex [md5::md5 -- $email]]]
-    return http://www.gravatar.com/avatar/$md5?size=$size
+    if {[info commands ns_md5] ne ""} {
+      set md5 [string tolower [ns_md5 $email]]
+    } else {
+      package require md5
+      set md5 [string tolower [md5::Hex [md5::md5 -- $email]]]
+    }
+    security::csp::require img-src www.gravatar.com
+    return //www.gravatar.com/avatar/$md5?size=$size
   }
 
   gravatar instproc render {} {
@@ -4510,7 +4554,7 @@ namespace eval ::xowiki::includelet {
   flowplayer instproc render {} {
     my get_parameters
     return "<a href='[ns_quotehtml $mp4]' style='display:block;width:425px;height:300px;' id='player'> </a>
-    <script type='text/javascript'>
+    <script type='text/javascript' nonce='$::__csp_nonce'>
  flowplayer('player', '/resources/xowiki/flowplayer/flowplayer-3.2.7.swf', {
         
     // this will enable pseudostreaming support 
@@ -4605,13 +4649,13 @@ namespace eval ::xowiki::includelet {
       }
   chat instproc render {} {
     my get_parameters
-    ns_log notice chat_id=$chat_id
     if {$chat_id eq ""} {
       # make the chat just for including page
-      set char_id [[my set __including_page] item_id]
+      set chat_id [[my set __including_page] item_id]
     }
     set r [::xowiki::Chat login -chat_id $chat_id -mode $mode -path $path]
     #ns_log notice chat=>$r
+
     return $r
   }
 }

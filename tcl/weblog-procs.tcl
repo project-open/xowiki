@@ -22,9 +22,9 @@ namespace eval ::xowiki {
     {exclude_item_ids 0}
     {entry_renderer ::xowiki::Weblog::Entry}
     {entry_flag}
-    {summary false}
+    {summary:boolean false}
     {summary_chars 150}
-    {compute_summary false}
+    {compute_summary:boolean false}
   }
 
   ::xowiki::Weblog proc instantiate_forms {
@@ -33,7 +33,6 @@ namespace eval ::xowiki {
      -forms:required 
      -package_id:required
      } {
-    set folder_id [::$package_id folder_id]
     set form_item_ids [list]
     foreach t [split $forms |] {
       #my log "trying to get $t // parent_id $parent_id"
@@ -67,10 +66,10 @@ namespace eval ::xowiki {
     set extra_where_clause ""
 
     if {$date ne ""} {
-      if {[regexp {['\"<>]} $date]} {
-        ns_log Warning "ignoring invalid date '$date'"
-        set date ""
-        set query [::xo::update_query $query date ""]
+      if {![regexp {^\d\d\d\d[-]\d\d[-]\d\d$} $date]} {
+        ns_log Warning "invalid date '$date'"
+        ad_return_complaint 1 "invalid date"
+        ad_script_abort
       }
     }
     if {$date ne ""} {
@@ -87,8 +86,8 @@ namespace eval ::xowiki {
       set category_ids {}
       foreach cid [split $category_id ,] {
         if {![string is integer -strict $cid]} {
-          ns_log warning "weblog: ignoring invalid category_id $cid"
-          continue
+          ad_return_complaint 1 "invalid category_id"
+          ad_script_abort
         }
         append extra_where_clause "and exists (select * from category_object_map \
            where object_id = ci.item_id and category_id = '$cid')"
@@ -103,6 +102,7 @@ namespace eval ::xowiki {
     }
     #my msg "tag=$tag"
     if {$tag ne ""} {
+      $package_id validate_tag $tag
       set filter_msg "Filtered by your tag $tag"
       append extra_from_clause " join xowiki_tags tags on (tags.item_id = bt.item_id) "
       append extra_where_clause "and tags.tag = :tag and \
@@ -111,6 +111,7 @@ namespace eval ::xowiki {
     }
     #my msg "ptag=$ptag"
     if {$ptag ne ""} {
+      $package_id validate_tag $ptag
       set filter_msg "Filtered by popular tag $ptag"
       append extra_from_clause " join xowiki_tags tags on (tags.item_id = bt.item_id) "
       append extra_where_clause "and tags.tag = :ptag " 
@@ -268,7 +269,7 @@ namespace eval ::xowiki {
     
     set summary_href [::xo::cc url]?[::xo::update_query $query summary [expr {!$summary}]]
     #set flink "<a href='[ns_quotehtml $summary_href$query_parm]'>[ns_quotehtml $smsg($summary)]</a>"
-    set flink "<a href='[ns_quotehtml $summary_href]'>[ns_quotehtml $smsg($summary)]</a>"
+    set flink "<a href='[ns_quotehtml $summary_href]'>[ns_quotehtml $smsg([string is true $summary])]</a>"
     
     if {$page_number ne ""} {
       set nr [llength [$items children]] 
