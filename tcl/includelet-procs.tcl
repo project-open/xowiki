@@ -476,6 +476,15 @@ namespace eval ::xowiki::includelet {
     return "<div $id class='$class'>[next]</div>"
   }
 
+
+  
+  # CUSTOMIZATION PROJOP
+  Class create ::xowiki::includelet::decoration=plain-no-div -instproc render {} {
+    return "[next]"
+  }
+  # /CUSTOMIZATION PROJOP
+
+  
   Class create ::xowiki::includelet::decoration=rightbox -instproc render {} {
     set class [namespace tail [my info class]]
     set id [expr {[my exists id] ? "id='[my id]'" : ""}]

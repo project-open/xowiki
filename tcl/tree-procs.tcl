@@ -284,10 +284,70 @@ namespace eval ::xowiki {
     #::xo::Page requireJS  "/resources/acs-templating/mktree.js"
     template::add_body_script -src "/resources/acs-templating/mktree.js"
   }
+  
   TreeRenderer=mktree proc render {tree} {
     return "<ul class='mktree' id='[$tree id]'>[next]</ul>"
   }
 
+
+
+  # CUSTOMIZATION PROJOP --------------------------------------------
+
+  # List specific renderer BOOTSTRAP template
+  # TreeRenderer create TreeRenderer=bootstrap -superclass TreeRenderer=list
+
+
+  TreeRenderer create TreeRenderer=bootstrap
+
+  TreeRenderer=bootstrap proc render {tree} {
+    return "<ul class=\"nav navbar-nav\">[next]</ul>"
+    # return "<ul>[next]</ul>"
+  }
+
+  TreeRenderer=bootstrap instproc render_item {{-highlight:boolean false} item} {
+    $item instvar title href
+    set prefix [$item set prefix]
+    set suffix [$item set suffix]
+    if {![$item exists encoded(prefix)]} {set prefix [::xowiki::Includelet html_encode $prefix]}
+    if {![$item exists encoded(suffix)]} {set suffix [::xowiki::Includelet html_encode $suffix]}
+    append entry \
+        $prefix "<a href='$href'>" [::xowiki::Includelet html_encode $title] "</a>" $suffix
+    if {$highlight} {
+      return "<li class='active'><b>$entry</b></li>\n"
+    } else {
+      return "<li>$entry</li>\n"
+    }
+  }
+
+  TreeRenderer=bootstrap instproc render_node {{-open:boolean false} cat_content} {
+
+    set label [::xowiki::Includelet html_encode [my label]]
+    if {[my exists count]} {
+      set entry "$label <a href='[my href]'>([my count])</a>"
+    } else {
+      if {[my href] ne ""} {
+        # set entry "<a href='[my href]' class='submenu-lnk'>$label</a>"
+              set entry "<span class='submenu-lnk'>$label</span>"
+            } else {
+              # set entry "<a href='#' class='submenu-lnk'>[my label]</a>"
+              set entry "<span class='submenu-lnk'>[my label]</span>"
+            }
+    }
+    if {$cat_content ne ""} {
+          set content "<ul>\n$cat_content</ul>"
+    } else {
+          set content ""
+    }
+
+      return "<li>$entry $content </li>"
+  }
+
+  # /CUSTOMIZATION PROJOP -------------------------------------------
+
+
+
+
+  
   #
   # List-specific renderer based for some menus
   #
